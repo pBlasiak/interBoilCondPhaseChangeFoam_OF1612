@@ -3,5 +3,6 @@ phaseChangeTwoPhaseMixture/phaseChangeTwoPhaseMixture.C
 phaseChangeTwoPhaseMixture/newPhaseChangeTwoPhaseMixture.C
 Lee/Lee.C
 Tanasawa/Tanasawa.C
+Hardt/Hardt.C
 
 LIB = $(FOAM_USER_LIBBIN)/libphaseChangeTwoPhaseMixturesPB
