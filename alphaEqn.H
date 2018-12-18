@@ -69,7 +69,9 @@
             volScalarField alpha100("alpha100", alpha10);
             alpha10 = alpha1;
 
-            MULES::correct
+            //MULES::correct
+			Info<< "MULES_of220 implicitSolve " << endl;
+            MULES_of220::implicitSolve
             (
                 geometricOneField(),
                 alpha1,
@@ -97,8 +99,9 @@
         }
         else
         {
-			Info<< "MULES explicit " << endl;
-            MULES::explicitSolve
+			//Info<< "MULES explicit " << endl;
+			Info<< "MULES_of220 explicit " << endl;
+            MULES_of220::explicitSolve
             (
                 geometricOneField(),
                 alpha1,

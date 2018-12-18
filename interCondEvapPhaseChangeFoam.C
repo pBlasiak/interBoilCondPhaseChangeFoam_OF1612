@@ -44,6 +44,7 @@ Description
 
 #include "fvCFD.H"
 #include "CMULES.H"
+#include "MULES_of220.H"
 #include "subCycle.H"
 #include "smoothInterfaceProperties.H"
 #include "phaseChangeTwoPhaseMixture.H"
