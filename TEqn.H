@@ -50,6 +50,8 @@
 			+ fvm::div(phi, T)
 		    - fvm::Sp(fvc::div(phi),T)
 			- fvm::laplacian( k/rhoC , T,"laplacian(alphaEff,T)")
+     ==
+		fvm::Sp(vDotcmvT/rhoC, T) - vDotcmvT/rhoC*TSat	// TODO update TSat in correct
 		);
     TEqn.solve();
 	}
