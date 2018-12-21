@@ -111,6 +111,14 @@ public:
             return cp2_;
         };
 
+		//- RAS Return the conductivity
+		tmp<volScalarField> lambda() const;
+
+		//- ASR Return the specific heats
+		tmp<volScalarField> cp() const;
+
+		//- ASR for calculating thermal diffusivity
+		tmp<volScalarField> alphaEff() const;
 //        //- Return enthalpy of vaporization
 //        const dimensionedScalar& hEvap() const
 //        {

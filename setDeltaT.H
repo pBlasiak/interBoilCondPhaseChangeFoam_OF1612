@@ -2,8 +2,8 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
-     \\/     M anipulation  |
+    \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
+     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE) Laboratory, PSU 
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -22,36 +22,32 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    alphaCourantNo
+    setDeltaT
 
 Description
-    Calculates and outputs the mean and maximum Courant Numbers.
+    Reset the timestep to maintain a constant maximum courant Number.
+    Reduction of time-step is immediate, but increase is damped to avoid
+    unstable oscillations.
 
 \*---------------------------------------------------------------------------*/
 
-scalar maxAlphaCo
-(
-    readScalar(runTime.controlDict().lookup("maxAlphaCo"))
-);
-
-scalar alphaCoNum = 0.0;
-scalar meanAlphaCoNum = 0.0;
-
-if (mesh.nInternalFaces())
+if (adjustTimeStep)
 {
-    scalarField sumPhi
+    scalar maxDeltaTFact =
+        min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ), maxFourier/(FourierNum + SMALL) );
+
+    scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
+
+    runTime.setDeltaT
     (
-        interface.nearInterface()().primitiveField()
-       *fvc::surfaceSum(mag(phi))().primitiveField()
+        min
+        (
+            deltaTFact*runTime.deltaTValue(),
+            maxDeltaT
+        )
     );
 
-    alphaCoNum = 0.5*gMax(sumPhi/mesh.V().field())*runTime.deltaTValue();
-
-    meanAlphaCoNum =
-        0.5*(gSum(sumPhi)/gSum(mesh.V().field()))*runTime.deltaTValue();
+    Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
 }
-
-Info<< "Interface Courant Number mean: " << meanAlphaCoNum
-    << " max: " << alphaCoNum << endl;
 
 // ************************************************************************* //

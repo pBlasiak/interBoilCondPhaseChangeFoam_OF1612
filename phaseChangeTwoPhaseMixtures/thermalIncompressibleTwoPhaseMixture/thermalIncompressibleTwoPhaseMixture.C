@@ -54,11 +54,7 @@ Foam::thermalIncompressibleTwoPhaseMixture::thermalIncompressibleTwoPhaseMixture
     (
         "k2_",
         k1_.dimensions(),
-        subDict(phase2Name_).lookup("k")
-    ),
-
-    cp1_
-    (
+        subDict(phase2Name_).lookup("k")), cp1_ (
         "cp1",
         dimEnergy/dimTemperature/dimMass,
         subDict(phase1Name_).lookup("cp")
@@ -82,7 +78,60 @@ Foam::thermalIncompressibleTwoPhaseMixture::thermalIncompressibleTwoPhaseMixture
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::lambda() const
+{
+    const volScalarField limitedAlpha1
+    (
+        min(max(alpha1_, scalar(0)), scalar(1))
+    );
 
+    return tmp<volScalarField>
+    (
+        //This is a pretty naive model for mixture conductivity (linear interpolation), but easy to evaluate
+		new volScalarField
+        (
+            "lambda",
+            limitedAlpha1*k1_
+          + (scalar(1) - limitedAlpha1)*k2_
+        )
+    );
+}
+
+Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::cp() const
+{
+	const volScalarField limitedAlpha1
+	(
+		min(max(alpha1_, scalar(0)), scalar(1))
+	);
+
+	//Calculate average cp
+	return tmp<volScalarField>
+	(
+		new volScalarField
+		(
+			"cp",
+		( cp1_*rho1_*limitedAlpha1 + cp2_*rho2_*(scalar(1) - limitedAlpha1) )/( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) )
+		)
+	);
+}
+
+Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::alphaEff() const
+{
+	const volScalarField limitedAlpha1
+	(
+		min(max(alpha1_, scalar(0)), scalar(1))
+	);
+
+	//Calculate average alpha
+	return tmp<volScalarField>
+	(
+		new volScalarField
+		(
+			"alpha",
+			lambda() / ( cp() * ( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) ) )
+		)
+	);
+}
 
 bool Foam::thermalIncompressibleTwoPhaseMixture::read()
 {

@@ -22,36 +22,28 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    alphaCourantNo
+    FourierNo
 
 Description
-    Calculates and outputs the mean and maximum Courant Numbers.
+    Calculates and outputs the mean and maximum Fourier Numbers.
 
 \*---------------------------------------------------------------------------*/
 
-scalar maxAlphaCo
+scalar maxFourier
 (
-    readScalar(runTime.controlDict().lookup("maxAlphaCo"))
+    readScalar(runTime.controlDict().lookup("maxFourier"))
 );
 
-scalar alphaCoNum = 0.0;
-scalar meanAlphaCoNum = 0.0;
+scalar FourierNum = 0.0;
+scalar meanFourierNum = 0.0;
 
-if (mesh.nInternalFaces())
-{
-    scalarField sumPhi
-    (
-        interface.nearInterface()().primitiveField()
-       *fvc::surfaceSum(mag(phi))().primitiveField()
-    );
+    FourierNum = gMax(  (mixture->alphaEff() + turbulence->nut())
+				            *runTime.deltaTValue()/pow(CellDims.field(), 2));
 
-    alphaCoNum = 0.5*gMax(sumPhi/mesh.V().field())*runTime.deltaTValue();
+    meanFourierNum = gAverage(  (mixture->alphaEff() + turbulence->nut())
+				            *runTime.deltaTValue()/pow(CellDims.field(), 2));
 
-    meanAlphaCoNum =
-        0.5*(gSum(sumPhi)/gSum(mesh.V().field()))*runTime.deltaTValue();
-}
-
-Info<< "Interface Courant Number mean: " << meanAlphaCoNum
-    << " max: " << alphaCoNum << endl;
+Info<< "Fourier Number mean: " << meanFourierNum
+    << " max: " << FourierNum << endl;
 
 // ************************************************************************* //
