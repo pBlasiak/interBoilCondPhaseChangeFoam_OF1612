@@ -1,80 +1,86 @@
 {
-    surfaceScalarField alpha1f =
-        min(max(fvc::interpolate(alpha1), scalar(0)), scalar(1));
+    //surfaceScalarField alpha1f =
+    //    min(max(fvc::interpolate(alpha1), scalar(0)), scalar(1));
 
-    surfaceScalarField kf =
-            alpha1f*k1 + (scalar(1) - alpha1f)*k2;
-    surfaceScalarField cpf =
-            alpha1f*cp1 + (scalar(1) - alpha1f)*cp2;
-	cp = alpha1*cp1 + (1.0 - alpha1)*cp2;
-	alphaEff = alpha1*k1 + (1.0 - alpha1)*k2;
+    //surfaceScalarField kf =
+    //        alpha1f*k1 + (scalar(1) - alpha1f)*k2;
+    //surfaceScalarField cpf =
+    //        alpha1f*cp1 + (scalar(1) - alpha1f)*cp2;
+	//cp = alpha1*cp1 + (1.0 - alpha1)*cp2;
+	//alphaEff = alpha1*k1 + (1.0 - alpha1)*k2;
 
 	Pair<tmp<volScalarField> > vDotT = mixture->vDotT();
 		const volScalarField& vDotcT = vDotT[0]();
 		const volScalarField& vDotvT = vDotT[1]();
 	    const volScalarField vDotcmvT(vDotcT - vDotvT);
 
-    volScalarField IF
-    (
-        IOobject
-        (
-            "IF",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-		mesh,
-        dimensionedScalar("IF", dimensionSet(1,-1,-3,-1,0,0,0), scalar(0))
-    );
+    //volScalarField IF
+    //(
+    //    IOobject
+    //    (
+    //        "IF",
+    //        runTime.timeName(),
+    //        mesh,
+    //        IOobject::NO_READ,
+    //        IOobject::NO_WRITE
+    //    ),
+	//	mesh,
+    //    dimensionedScalar("IF", dimensionSet(1,-1,-3,-1,0,0,0), scalar(0))
+    //);
 
 	//	TODO it is not used now!!!!!!!!!!
 //	IF = twoPhaseProperties->IF();
-	forAll(alpha1, celli)
-	{
-		if (alpha1[celli] < 1.0 - cutoff.value() && alpha1[celli] > cutoff.value()) IF[celli] = 1.0;
-	}
+	//forAll(alpha1, celli)
+	//{
+	//	if (alpha1[celli] < 1.0 - cutoff.value() && alpha1[celli] > cutoff.value()) IF[celli] = 1.0;
+	//}
 
 
 	TSat = mixture->TSat();
 
-	if (NimaSamTEqn)
-	{
+	//if (NimaSamTEqn)
+	//{
 		Info<< "Nima Sam TEqn is solved." << endl;
 	//	for Nima Sam TEqn
 	volScalarField k= k1*alpha1 + (1.0 - alpha1)*k2;
 	volScalarField rhoC = rho1*cp1*alpha1 + (1.0 - alpha1)*rho2*cp2;
+	//surfaceScalarField rhoCf = rho1*cp1*alpha1f + (1.0 - alpha1f)*rho2*cp2;
 	    fvScalarMatrix TEqn
 	    (
 			  fvm::ddt(T)
 			+ fvm::div(phi, T)
 		    - fvm::Sp(fvc::div(phi),T)
 			- fvm::laplacian( k/rhoC , T,"laplacian(alphaEff,T)")
-     ==
-		fvm::Sp(vDotcmvT/rhoC, T) - vDotcmvT/rhoC*TSat	// TODO update TSat in correct
 		);
-    TEqn.solve();
-	}
-	else
-	{
-    fvScalarMatrix TEqn
-    (
-//	 // Nima Sam TEqn
-//		  fvm::ddt(T)
-//		+ fvm::div(phi, T)
-//	    - fvm::Sp(fvc::div(phi),T)
-//		- fvm::laplacian( k/rhoC , T,"laplacian(alphaEff,T)")
-//	 // End of Nima Sam TEqn
-
-        fvm::ddt(rhoCp, T)
-      + fvm::div(rhoPhiCp, T)
-      - fvm::Sp(fvc::ddt(rhoCp) + fvc::div(rhoPhiCp), T)
-      - fvm::laplacian(kf, T)
+    TEqn.relax();
+	solve
+	(
+		TEqn
      ==
+		//fvm::Sp(vDotcmvT/rhoC, T) - vDotcmvT/rhoC*TSat	// TODO update TSat in correct
 		fvm::Sp(vDotcmvT, T) - vDotcmvT*TSat	// TODO update TSat in correct
-    );
-    TEqn.solve();
-	}	
+	);
+	//}
+	//else
+	//{
+    //fvScalarMatrix TEqn
+    //(
+//	// // Nima Sam TEqn
+//	//	  fvm::ddt(T)
+//	//	+ fvm::div(phi, T)
+//	//    - fvm::Sp(fvc::div(phi),T)
+//	//	- fvm::laplacian( k/rhoC , T,"laplacian(alphaEff,T)")
+//	// // End of Nima Sam TEqn
+
+    //    fvm::ddt(rhoCp, T)
+    //  + fvm::div(rhoPhiCp, T)
+    //  - fvm::Sp(fvc::ddt(rhoCp) + fvc::div(rhoPhiCp), T)
+    //  - fvm::laplacian(kf, T)
+    // ==
+	//	fvm::Sp(vDotcmvT, T) - vDotcmvT*TSat	// TODO update TSat in correct
+    //);
+    //TEqn.solve();
+	//}	
 //	// OLD EQUATION:
 //	// TODO try TEqn by Nima Sam?
 //    fvScalarMatrix TEqn

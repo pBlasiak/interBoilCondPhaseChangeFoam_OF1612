@@ -41,7 +41,7 @@ if (mesh.nInternalFaces())
 {
     scalarField sumPhi
     (
-        mixture.nearInterface()().primitiveField()
+        interface.nearInterface()().primitiveField()
        *fvc::surfaceSum(mag(phi))().primitiveField()
     );
 

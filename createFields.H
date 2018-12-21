@@ -10,11 +10,11 @@ IOdictionary transportProperties
 	)
 );
 
-Switch NimaSamTEqn
-(
-	transportProperties.lookup("NimaSamTEqn")
-);
-
+//Switch NimaSamTEqn
+//(
+//	transportProperties.lookup("NimaSamTEqn")
+//);
+//
 Switch NimaSamAlphaEqn
 (
 	transportProperties.lookup("NimaSamAlphaEqn")

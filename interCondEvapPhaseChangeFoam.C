@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
     {
         #include "createTimeControls.H"
         #include "CourantNo.H"
+        #include "alphaCourantNo.H"
         #include "setDeltaT.H"
 
         runTime++;
