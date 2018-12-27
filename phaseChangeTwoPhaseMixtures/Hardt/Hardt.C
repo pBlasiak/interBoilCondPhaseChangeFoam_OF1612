@@ -76,7 +76,7 @@ Foam ::volScalarField Foam::phaseChangeTwoPhaseMixtures::Hardt::AbyV() const
 			);
 }
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
-Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotAlphal() //const
+Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotAlphal() const
 {
     const volScalarField& T = alpha1_.db().lookupObject<volScalarField>("T");
 
@@ -91,7 +91,7 @@ Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotAlphal() //const
 
 }
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
-Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotP() //const
+Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotP() const
 {
     const volScalarField& T = alpha1_.db().lookupObject<volScalarField>("T");
     const volScalarField& p = alpha1_.db().lookupObject<volScalarField>("p");
@@ -112,7 +112,7 @@ Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotP() //const
 }
 
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
-Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotT() //const
+Foam::phaseChangeTwoPhaseMixtures::Hardt::mDotT() const
 {
     const volScalarField& T = alpha1_.db().lookupObject<volScalarField>("T");
     volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));

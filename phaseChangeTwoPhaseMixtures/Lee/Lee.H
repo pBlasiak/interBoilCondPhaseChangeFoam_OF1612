@@ -95,21 +95,18 @@ public:
 	
 
         //- Return the mass condensation and vaporisation rates as a
-        //  coefficient to multiply (1 - alphal) for the condensation rate
-        //  and a coefficient to multiply  alphal for the vaporisation rate
+        //  coefficient to multiply by (1 - alphal) for the condensation rate
+        //  and a coefficient to multiply by alphal for the vaporisation rate
 		//  in alphaEqn
-        //virtual Pair<tmp<volScalarField> > mDotAlphal() const;
-        virtual Pair<tmp<volScalarField> > mDotAlphal();
+        virtual Pair<tmp<volScalarField> > mDotAlphal() const;
 
         //- Return the mass condensation and vaporisation rates as coefficients
-        //  to multiply (p - pSat) in pEqn
-        //virtual Pair<tmp<volScalarField> > mDotP() const;
-        virtual Pair<tmp<volScalarField> > mDotP();
+        //  to multiply by (p - pSat) in pEqn
+        virtual Pair<tmp<volScalarField> > mDotP() const;
 
         //- Return the mass condensation and vaporisation rates as coefficients
-        //  to multiply (T - TSat) in TEqn
-        //virtual Pair<tmp<volScalarField> > mDotT() const;
-        virtual Pair<tmp<volScalarField> > mDotT();
+        //  to multiply by (T - TSat) in TEqn
+        virtual Pair<tmp<volScalarField> > mDotT() const;
 
         //- Read the transportProperties dictionary and update
         virtual bool read();

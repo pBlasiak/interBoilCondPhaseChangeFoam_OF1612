@@ -84,8 +84,8 @@ volScalarField& alpha2(mixture->alpha2());
 
 const dimensionedScalar& rho1 = mixture->rho1();
 const dimensionedScalar& rho2 = mixture->rho2();
-const dimensionedScalar& k1 = mixture->k1();
-const dimensionedScalar& k2 = mixture->k2();
+//const dimensionedScalar& k1 = mixture->k1();
+//const dimensionedScalar& k2 = mixture->k2();
 const dimensionedScalar& cp1 = mixture->cp1();
 const dimensionedScalar& cp2 = mixture->cp2();
 const dimensionedScalar& hEvap = mixture->hEvap();
@@ -97,89 +97,20 @@ mixture->correct();
 volScalarField TSat = mixture->TSat();
 
 
-//    surfaceScalarField rhoPhi
-//    (
-//        IOobject
-//        (
-//            "rhoPhi",
-//            runTime.timeName(),
-//            mesh,
-//            IOobject::NO_READ,
-//            IOobject::NO_WRITE
-//        ),
-//        rho1*phi
-//    );
-
-    volScalarField alphaEff
-    (
-        IOobject
-        (
-            "alphaEff",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        alpha1*k1 + alpha2*k2
-    );
-
-    volScalarField cp
-    (
-        IOobject
-        (
-            "cp",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        alpha1*cp1 + alpha2*cp2
-    );
-
 // Need to store rho for ddt(rhoCp, U)
-    volScalarField rhoCp
+volScalarField rhoCp
+(
+    IOobject
     (
-        IOobject
-        (
-            "rhoCp",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE
-        ),
-        rho1*alpha1*cp1 + rho2*alpha2*cp2
-    );
-	rhoCp.oldTime();
-
-    //volScalarField mCond
-    //(
-    //    IOobject
-    //    (
-    //        "mCond",
-    //        runTime.timeName(),
-    //        mesh,
-    //        IOobject::NO_READ,
-    //        IOobject::NO_WRITE
-    //        //IOobject::AUTO_WRITE
-    //    ),
-    //    //mixture->mDotAlphal()[0]()*(1.0 - alpha1)
-    //    mixture->mCondDotAlphal()*(1.0 - alpha1)
-    //);
-
-    //volScalarField mVap
-    //(
-    //    IOobject
-    //    (
-    //        "mVap",
-    //        runTime.timeName(),
-    //        mesh,
-    //        IOobject::NO_READ,
-    //        IOobject::NO_WRITE
-    //        //IOobject::AUTO_WRITE
-    //    ),
-    //    //mixture->mDotAlphal()[1]*alpha1
-    //    mixture->mEvapDotAlphal()*alpha1
-    //);
+        "rhoCp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    rho1*alpha1*cp1 + rho2*alpha2*cp2
+);
+rhoCp.oldTime();
 
 // Construct interface from alpha1 distribution
 smoothInterfaceProperties interface(alpha1, U, mixture());

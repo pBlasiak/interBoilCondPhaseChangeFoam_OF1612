@@ -63,20 +63,12 @@ protected:
 
         dictionary phaseChangeTwoPhaseMixtureCoeffs_;
 
-		//- Condensation mass flux, kg/s/m3 (+)
-		volScalarField mCondDotAlphal_;
+		//- Condensation mass flux, kg/s (+)
+		volScalarField mCond_;
 		
-		//- Vaporisation mass flux, kg/s/m3 (-)
-		volScalarField mEvapDotAlphal_;
+		//- Vaporisation mass flux, kg/s (-)
+		volScalarField mEvap_;
 		
-		volScalarField mCondDotP_;
-
-		volScalarField mEvapDotP_;
-
-		volScalarField mCondDotT_;
-
-		volScalarField mEvapDotT_;
-
         //- Reference to pressure field
         const volScalarField& p_;
 
@@ -100,6 +92,8 @@ protected:
 
 		//-True if saturation vapour temperature is based on pressure
 		Switch TSatLocalPressure_;
+
+		Switch printPhaseChange_;
 		
 
     // Private Member Functions
@@ -165,16 +159,16 @@ public:
 
     // Member Functions
 
-        //- Return const-access to the mCondDotAlphal_
-        const volScalarField& mCondDotAlphal() const
+        //- Return const-access to the condensation mass flux
+        const volScalarField& mCond() const
         {
-            return mCondDotAlphal_;
+            return mCond_;
         }
 		
-        //- Return const-access to the mEvapDotAlphal_
-        const volScalarField& mEvapDotAlphal() const
+        //- Return const-access to the evaporation mass flux
+        const volScalarField& mEvap() const
         {
-            return mEvapDotAlphal_;
+            return mEvap_;
         }
 
         //- Return const-access to the global saturation temperature
@@ -208,38 +202,32 @@ public:
         }
 
         //- Return the mass condensation and vaporisation rates as a
-        //  coefficient to multiply (1 - alphal) for the condensation rate
-        //  and a coefficient to multiply  alphal for the vaporisation rate
+        //  coefficient to multiply by (1 - alphal) for the condensation rate
+        //  and a coefficient to multiply by alphal for the vaporisation rate
 		//  in alphaEqn
-        //virtual Pair<tmp<volScalarField>> mDotAlphal() const = 0;
-        virtual Pair<tmp<volScalarField>> mDotAlphal()  = 0;
+        virtual Pair<tmp<volScalarField>> mDotAlphal() const = 0;
 
         //- Return the mass condensation and vaporisation rates as coefficients
-        //  to multiply (p - pSat) in pEqn
-        //virtual Pair<tmp<volScalarField>> mDotP() const = 0;
-        virtual Pair<tmp<volScalarField>> mDotP() = 0;
+        //  to multiply by (p - pSat) in pEqn
+        virtual Pair<tmp<volScalarField>> mDotP() const = 0;
 
         //- Return the mass condensation and vaporisation rates as coefficients
-        //  to multiply (T - TSat) in TEqn
-        //virtual Pair<tmp<volScalarField> > mDotT() const = 0;
-        virtual Pair<tmp<volScalarField> > mDotT() = 0;
+        //  to multiply by (T - TSat) in TEqn
+        virtual Pair<tmp<volScalarField> > mDotT() const = 0;
 
         //- Return the volumetric condensation and vaporisation rates as a
-        //  coefficient to multiply (1 - alphal) for the condensation rate
-        //  and a coefficient to multiply  alphal for the vaporisation rate
+        //  coefficient to multiply by (1 - alphal) for the condensation rate
+        //  and a coefficient to multiply by alphal for the vaporisation rate
 		//  in alphaEqn
-        //Pair<tmp<volScalarField>> vDotAlphal() const;
-        Pair<tmp<volScalarField>> vDotAlphal();
+        Pair<tmp<volScalarField>> vDotAlphal() const;
 
         //- Return the volumetric condensation and vaporisation rates as
-        //  coefficients to multiply (p - pSat)
-        //Pair<tmp<volScalarField>> vDotP() const;
-        Pair<tmp<volScalarField>> vDotP();
+        //  coefficients to multiply by (p - pSat)
+        Pair<tmp<volScalarField>> vDotP() const;
 		
         //- Return the volumetric condensation and vaporisation rates as
-        //  coefficients to multiply (T - TSat)
-        //Pair<tmp<volScalarField>> vDotT() const;
-        Pair<tmp<volScalarField>> vDotT();
+        //  coefficients to multiply by (T - TSat)
+        Pair<tmp<volScalarField>> vDotT() const;
 
         //- Correct the phaseChange model
         virtual void correct();

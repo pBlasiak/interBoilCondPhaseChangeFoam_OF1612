@@ -102,17 +102,13 @@ public:
 
 
         //multiply  alphal for the vaporization rate
-        virtual Pair<tmp<volScalarField> > mDotAlphal(); //const;
-
+        virtual Pair<tmp<volScalarField> > mDotAlphal() const;
 
         //add in p.Eqn for the vaporization rate
-        virtual Pair<tmp<volScalarField> > mDotP(); //const;
+        virtual Pair<tmp<volScalarField> > mDotP() const;
 
         //add in T.Eqn for the vaporization rate
-        virtual Pair<tmp<volScalarField> > mDotT(); //const;
-
-        //- Correct the Hardt phaseChange model
-        //virtual void correct();
+        virtual Pair<tmp<volScalarField> > mDotT() const;
 
         //- Read the transportProperties dictionary and update
         virtual bool read();

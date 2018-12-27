@@ -6,24 +6,18 @@
 
 	TSat = mixture->TSat();
 
-	volScalarField k = mixture->k();
-	    fvScalarMatrix TEqn
-	    (
-			  fvm::ddt(T)
-			+ fvm::div(phi, T)
-	//	    - fvm::Sp(fvc::div(phi),T)
-			- fvm::laplacian( k/rhoCp , T,"laplacian(alphaEff,T)")
-		);
-    TEqn.relax();
-	solve
+	fvScalarMatrix TEqn
 	(
-		TEqn
-     ==
-		//fvm::Sp(vDotcmvT/rhoC, T) - vDotcmvT/rhoC*TSat	// TODO update TSat in correct
-		fvm::Sp(vDotcmvT, T) - vDotcmvT*TSat	// TODO update TSat in correct
+		  fvm::ddt(T)
+		+ fvm::div(phi, T)
+	    - fvm::Sp(fvc::div(phi),T)
+		- fvm::laplacian(mixture->alphaEff(), T,"laplacian(alphaEff,T)")
+	 ==
+		  fvm::Sp(vDotcmvT/rhoCp, T) - vDotcmvT/rhoCp*TSat	
 	);
 
-	
+    TEqn.relax();
+    TEqn.solve();
 
     Info<< "min/max(T) = " << min(T).value() << ", "
         << max(T).value() <<endl;

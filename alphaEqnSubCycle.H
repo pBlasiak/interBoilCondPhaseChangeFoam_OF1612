@@ -15,7 +15,6 @@
     {
         dimensionedScalar totalDeltaT = runTime.deltaT();
         surfaceScalarField rhoPhiSum("rhoPhiSum", rhoPhi);
-        surfaceScalarField rhoPhiCpSum("rhoPhiCpSum", rhoPhiCp);
 
         for
         (
@@ -25,11 +24,9 @@
         {
             #include "alphaEqn.H"
             rhoPhiSum += (runTime.deltaT()/totalDeltaT)*rhoPhi;
-            rhoPhiCpSum += (runTime.deltaT()/totalDeltaT)*rhoPhiCp;
         }
 
         rhoPhi = rhoPhiSum;
-        rhoPhiCp = rhoPhiCpSum;
     }
     else
     {

@@ -44,7 +44,6 @@ Description
 
 #include "fvCFD.H"
 #include "CMULES.H"
-#include "MULES_of220.H"
 #include "subCycle.H"
 #include "smoothInterfaceProperties.H"
 #include "phaseChangeTwoPhaseMixture.H"
@@ -62,8 +61,6 @@ int main(int argc, char *argv[])
 
     pimpleControl pimple(mesh);
 
-//    #include "readGravitationalAcceleration.H"
-//    #include "initContinuityErrs.H"
     #include "createFields.H"
     #include "createMRF.H"
     #include "createFvOptions.H"
@@ -89,36 +86,12 @@ int main(int argc, char *argv[])
         runTime++;
 
         Info<< "Time = " << runTime.timeName() << nl << endl;
-            surfaceScalarField rhoPhiCp
-            (
-                IOobject
-                (
-                    "rhoPhiCp",
-                    runTime.timeName(),
-                    mesh
-                ),
-                mesh,
-                dimensionedScalar("0", dimMass/dimTime*dimSpecificHeatCapacity, 0)
-            );
 
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
             #include "alphaControls.H"
 
-			dimensionedScalar zeroMassFlux("0", dimensionSet(1,2,-3,-1,0,0,0), 0.0);
-			rhoPhiCp = zeroMassFlux;
-            //surfaceScalarField rhoPhiCp
-            //(
-            //    IOobject
-            //    (
-            //        "rhoPhiCp",
-            //        runTime.timeName(),
-            //        mesh
-            //    ),
-            //    mesh,
-            //    dimensionedScalar("0", dimMass/dimTime*dimSpecificHeatCapacity, 0)
-            //);
             surfaceScalarField rhoPhi
             (
                 IOobject
@@ -130,9 +103,6 @@ int main(int argc, char *argv[])
                 mesh,
                 dimensionedScalar("0", dimMass/dimTime, 0)
             );
-//			dimensionedScalar zeroMassFlux("0", dimMass/dimTime, 0);
-//			rhoPhi = zeroMassFlux;
-
 
             #include "alphaEqnSubCycle.H"
             interface.correct();
@@ -151,19 +121,11 @@ int main(int argc, char *argv[])
                 turbulence->correct();
             }
         }
-        //#include "TEqn.H" // w Nima Sam tutaj jest TEqn
-            //mixture->correct(); // w Nima Sam tutaj jest correct()
 
         mixture->correct();
 
         runTime.write();
-    volScalarField limitedAlpha1 = min(max(alpha1, scalar(0)), scalar(1));
 
-		// TODO zrob save mv i mc zeby nie trzeba tego liczyc ???
-        Info<< "****Condensation rate: "
-            << gSum(mixture->mDotAlphal()[0]*mesh.V()*(1.0 - limitedAlpha1))*hEvap.value() << " W" << endl;
-        Info<< "****Evaporation rate: "
-            << gSum(mixture->mDotAlphal()[1]*mesh.V()*limitedAlpha1)*hEvap.value()  << " W" << endl;
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;

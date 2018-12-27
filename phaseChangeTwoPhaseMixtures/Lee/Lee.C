@@ -60,13 +60,8 @@ Foam::phaseChangeTwoPhaseMixtures::Lee::Lee
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
-Foam::phaseChangeTwoPhaseMixtures::Lee::mDotAlphal() 
-//Foam::phaseChangeTwoPhaseMixtures::Lee::mDotAlphal() const
+Foam::phaseChangeTwoPhaseMixtures::Lee::mDotAlphal() const
 {
-    //const volScalarField& T = alpha1_.db().lookupObject<volScalarField>("T");
-//	TSatLocal();
-//    volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));
-
     const dimensionedScalar T0("0", dimTemperature, 0.0);
 
     return Pair<tmp<volScalarField> >
@@ -79,8 +74,7 @@ Foam::phaseChangeTwoPhaseMixtures::Lee::mDotAlphal()
 }
 
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
-Foam::phaseChangeTwoPhaseMixtures::Lee::mDotP() 
-//Foam::phaseChangeTwoPhaseMixtures::Lee::mDotP() const
+Foam::phaseChangeTwoPhaseMixtures::Lee::mDotP() const
 {
     const volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));
     const dimensionedScalar T0("0", dimTemperature, 0.0);
@@ -97,8 +91,7 @@ Foam::phaseChangeTwoPhaseMixtures::Lee::mDotP()
 }
 
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
-Foam::phaseChangeTwoPhaseMixtures::Lee::mDotT()
-//Foam::phaseChangeTwoPhaseMixtures::Lee::mDotT() const
+Foam::phaseChangeTwoPhaseMixtures::Lee::mDotT() const
 {
     volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));
 
@@ -111,10 +104,6 @@ Foam::phaseChangeTwoPhaseMixtures::Lee::mDotT()
         mvCoeff_*limitedAlpha1*pos(T_ - TSat_)/TSat_
     );
 }
-
-//void Foam::phaseChangeTwoPhaseMixtures::Lee::correct()
-//{}
-
 
 bool Foam::phaseChangeTwoPhaseMixtures::Lee::read()
 {

@@ -68,8 +68,6 @@
             alpha10 = alpha1;
 
             MULES::correct
-			//Info<< "MULES_of220 implicitSolve " << endl;
-            //MULES_of220::implicitSolve
             (
                 geometricOneField(),
                 alpha1,
@@ -97,8 +95,6 @@
         }
         else
         {
-			//Info<< "MULES_of220 explicit " << endl;
-            //MULES_of220::explicitSolve
             MULES::explicitSolve
             (
                 geometricOneField(),
@@ -118,7 +114,6 @@
     }
 
     rhoPhi = talphaPhi()*(rho1 - rho2) + phi*rho2;
-    rhoPhiCp = talphaPhi()*(rho1*cp1 - rho2*cp2) + phi*rho2*cp2;
 
     Info<< "Liquid phase volume fraction = "
         << alpha1.weightedAverage(mesh.V()).value()
