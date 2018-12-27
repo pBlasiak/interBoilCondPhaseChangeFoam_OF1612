@@ -1,30 +1,3 @@
-IOdictionary transportProperties
-(
-	IOobject
-	(
-		"transportProperties",
-		runTime.constant(),
-		mesh,
-		IOobject::MUST_READ_IF_MODIFIED,
-		IOobject::NO_WRITE
-	)
-);
-
-//Switch NimaSamTEqn
-//(
-//	transportProperties.lookup("NimaSamTEqn")
-//);
-//
-Switch NimaSamAlphaEqn
-(
-	transportProperties.lookup("NimaSamAlphaEqn")
-);
-
-Switch NimaSamPEqn
-(
-	transportProperties.lookup("NimaSamPEqn")
-);
-
 Info<< "Reading field p_rgh\n" << endl;
 volScalarField p_rgh
 (

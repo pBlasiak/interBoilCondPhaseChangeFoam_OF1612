@@ -1,6 +1,4 @@
 {
-	if (!NimaSamAlphaEqn)
-	{
     word alphaScheme("div(phi,alpha)");
     word alpharScheme("div(phirb,alpha)");
 
@@ -122,96 +120,7 @@
 
     rhoPhi = talphaPhi()*(rho1 - rho2) + phi*rho2;
     rhoPhiCp = talphaPhi()*(rho1*cp1 - rho2*cp2) + phi*rho2*cp2;
-	}
-	else
-	{
 
-	Info << "Nima Sam alphaEqn is solved." << endl;
-    word alphaScheme("div(phi,alpha)");
-    word alpharScheme("div(phirb,alpha)");
-
-    surfaceScalarField phir("phir", phic*interface.nHatf());
-
-    for (int gCorr=0; gCorr<nAlphaCorr; gCorr++)
-    {
-        surfaceScalarField phiAlpha
-        (
-            fvc::flux
-            (
-                phi,
-                alpha1,
-                alphaScheme
-            )
-          + fvc::flux
-            (
-                -fvc::flux(-phir, scalar(1) - alpha1, alpharScheme),
-                alpha1,
-                alpharScheme
-            )
-        );
-
-        Pair<tmp<volScalarField> > vDotAlphal =
-            mixture->vDotAlphal();
-        const volScalarField& vDotcAlphal = vDotAlphal[0]();//+
-        const volScalarField& vDotvAlphal = vDotAlphal[1]();//-
-
-        volScalarField Sp
-        (
-            IOobject
-            (
-                "Sp",
-                runTime.timeName(),
-                mesh
-            ),
-            vDotvAlphal - vDotcAlphal
-        );
-
-        volScalarField Su
-        (
-            IOobject
-            (
-                "Su",
-                runTime.timeName(),
-                mesh
-            ),
-            // Divergence term is handled explicitly to be
-            // consistent with the explicit transport solution
-            divU*alpha1
-          + vDotcAlphal
-        );
-
-
-
-  //      	Info << "solve alphaEqn1" << endl;
-        	/*MULES::implicitSolve
-        	        	(
-        	            geometricOneField(),
-        	            alpha1,
-        	            phi,
-        	            phiAlpha,
-        	            Sp,
-        	            Su,
-        	            1,
-        	            0
-        	        	);
-        	        	*/
-        	MULES::explicitSolve
-        	        (
-        	            geometricOneField(),
-        	            alpha1,
-        	            phi,
-        	            phiAlpha,
-        	            Sp,
-        	            Su,
-        	            1,
-        	            0
-        	        );
-        rhoPhi +=
-           (phiAlpha*(rho1 - rho2) + phi*rho2);
-        rhoPhiCp +=
-           (phiAlpha*(rho1*cp1 - rho2*cp2) + phi*rho2*cp2);
-	}
-	}
     Info<< "Liquid phase volume fraction = "
         << alpha1.weightedAverage(mesh.V()).value()
         << "  Min(" << alpha1.name() << ") = " << min(alpha1).value()
