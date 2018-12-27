@@ -111,14 +111,23 @@ public:
             return cp2_;
         };
 
-		//- RAS Return the conductivity
-		tmp<volScalarField> lambda() const;
+		//- Return thermal conductivity of the mixture
+		tmp<volScalarField> k() const;
+		
+		//- Return face-interpolated harmonic thermal conductivity 
+		//  of the mixture 
+		tmp<surfaceScalarField> kfHarmonic() const;
 
-		//- ASR Return the specific heats
+		//- Return face-interpolated density-weighted 
+		//  harmonic thermal conductivity of the mixture 
+		tmp<surfaceScalarField> kfDensityHarmonic() const;
+
+		//- Return specific heat of the mixture
 		tmp<volScalarField> cp() const;
 
-		//- ASR for calculating thermal diffusivity
+		//- Return thermal diffusivity of the mixture
 		tmp<volScalarField> alphaEff() const;
+
 //        //- Return enthalpy of vaporization
 //        const dimensionedScalar& hEvap() const
 //        {

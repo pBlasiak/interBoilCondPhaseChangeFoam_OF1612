@@ -101,14 +101,6 @@ protected:
 		//-True if saturation vapour temperature is based on pressure
 		Switch TSatLocalPressure_;
 		
-        //- cutoff scalar for interface 
-        dimensionedScalar cutoff_;
-
-		//-True if saturation vapour temperature is based on pressure
-//		Switch NimaSamTEqn_;
-		
-		//-True if saturation vapour temperature is based on pressure
-//		Switch NimaSamAlphaEqn_;
 
     // Private Member Functions
 
@@ -214,13 +206,6 @@ public:
         {
             return R_;
         }
-		
-        //- Return const-access to the cutoff 
-        const dimensionedScalar& cutoff() const
-        {
-            return cutoff_;
-        }
-
 
         //- Return the mass condensation and vaporisation rates as a
         //  coefficient to multiply (1 - alphal) for the condensation rate

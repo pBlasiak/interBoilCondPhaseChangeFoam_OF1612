@@ -141,17 +141,13 @@ Foam::phaseChangeTwoPhaseMixture::phaseChangeTwoPhaseMixture
     pSat_("pSat", dimPressure, phaseChangeTwoPhaseMixtureCoeffs_.lookup("pSat")),
     hEvap_("hEvap", dimEnergy/dimMass, phaseChangeTwoPhaseMixtureCoeffs_.lookup("hEvap")),
     R_("R", dimGasConstant, phaseChangeTwoPhaseMixtureCoeffs_.lookup("R")),
-    TSatLocalPressure_(readBool(phaseChangeTwoPhaseMixtureCoeffs_.lookup("TSatLocalPressure"))),
-    cutoff_("cutoff", dimless, phaseChangeTwoPhaseMixtureCoeffs_.lookup("cutoff"))
-    //NimaSamTEqn_("NimaSamTEqn", phaseChangeTwoPhaseMixtureCoeffs_.lookup("NimaSamTEqn")),
-    //NimaSamAlphaEqn_("NimaSamAlphaEqn", phaseChangeTwoPhaseMixtureCoeffs_.lookup("NimaSamAlphaEqn"))
+    TSatLocalPressure_(readBool(phaseChangeTwoPhaseMixtureCoeffs_.lookup("TSatLocalPressure")))
 {
 	Info<< "TSatGlobal = "				<< TSatG_ << endl;
 	Info<< "pSat = "		  			<< pSat_ << endl;
 	Info<< "hEvap = "		  			<< hEvap_ << endl;
 	Info<< "R = "			  			<< R_ << endl;
 	Info<< "TSatLocalPressure = "       << TSatLocalPressure_ << endl;
-	Info<< "cutoff = "					<< cutoff_ << endl;
 }
 
 
@@ -188,28 +184,21 @@ Foam::Pair<Foam::tmp<Foam::volScalarField> >
 Foam::phaseChangeTwoPhaseMixture::vDotT()
 //Foam::phaseChangeTwoPhaseMixture::vDotT() const
 {
-//	   if (NimaSamTEqn_)
-//	   {
 	   volScalarField rhoCp =  rho1()*cp1()*alpha1_ + rho2()*cp2()*(1.0-alpha1_);
-	   volScalarField TCoeff = hEvap_/rhoCp;
+//	   volScalarField TCoeff = hEvap_/rhoCp;
 	   Pair<tmp<volScalarField> > mDotT = this->mDotT();
-
-	    return Pair<tmp<volScalarField> >
-	    (
-	    		TCoeff*mDotT[0],
-	    		TCoeff*mDotT[1]
-	    );
-//	   }
-//	   else
-//	   {
-//	   Pair<tmp<volScalarField> > mDotT = this->mDotT();
 //
 //	    return Pair<tmp<volScalarField> >
 //	    (
-//	    		hEvap_*mDotT[0],
-//	    		hEvap_*mDotT[1]
+//	    		TCoeff*mDotT[0],
+//	    		TCoeff*mDotT[1]
 //	    );
-//	   }
+
+	    return Pair<tmp<volScalarField> >
+	    (
+	    		hEvap_/rhoCp*mDotT[0],
+	    		hEvap_/rhoCp*mDotT[1]
+	    );
 }
 
 Foam::Pair<Foam::tmp<Foam::volScalarField>>
@@ -237,7 +226,6 @@ bool Foam::phaseChangeTwoPhaseMixture::read()
         phaseChangeTwoPhaseMixtureCoeffs_.lookup("pSat") >> pSat_;
         phaseChangeTwoPhaseMixtureCoeffs_.lookup("hEvap") >> hEvap_;
         phaseChangeTwoPhaseMixtureCoeffs_.lookup("R") >> R_;
-        phaseChangeTwoPhaseMixtureCoeffs_.lookup("cutoff") >> cutoff_;
 
         return true;
     }

@@ -97,7 +97,6 @@
         }
         else
         {
-			Info<< "MULES explicit " << endl;
 			//Info<< "MULES_of220 explicit " << endl;
             //MULES_of220::explicitSolve
             MULES::explicitSolve

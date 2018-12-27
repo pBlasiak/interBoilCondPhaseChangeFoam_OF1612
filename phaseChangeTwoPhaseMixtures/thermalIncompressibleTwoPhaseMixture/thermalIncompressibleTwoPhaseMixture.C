@@ -23,7 +23,9 @@ License
 
 \*---------------------------------------------------------------------------*/
 
+//#include "fvCFD.H"
 #include "thermalIncompressibleTwoPhaseMixture.H"
+#include "fvc.H"
 
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -78,7 +80,7 @@ Foam::thermalIncompressibleTwoPhaseMixture::thermalIncompressibleTwoPhaseMixture
 
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
-Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::lambda() const
+Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::k() const
 {
     const volScalarField limitedAlpha1
     (
@@ -87,12 +89,54 @@ Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::lamb
 
     return tmp<volScalarField>
     (
-        //This is a pretty naive model for mixture conductivity (linear interpolation), but easy to evaluate
 		new volScalarField
         (
-            "lambda",
+            "k",
             limitedAlpha1*k1_
           + (scalar(1) - limitedAlpha1)*k2_
+        )
+    );
+}
+
+Foam::tmp<Foam::surfaceScalarField> 
+Foam::thermalIncompressibleTwoPhaseMixture::kfHarmonic() const
+{
+    const surfaceScalarField limitedAlpha1f
+    (
+        min(max(fvc::interpolate(alpha1_), scalar(0)), scalar(1))
+    );
+
+    return tmp<surfaceScalarField>
+    (
+		new surfaceScalarField
+        (
+            "kfHarmonic",
+			1.0/
+			(
+				(1.0/k1_ - 1.0/k2_)*limitedAlpha1f
+			  + 1.0/k2_
+			)
+        )
+    );
+}
+
+Foam::tmp<Foam::surfaceScalarField> 
+Foam::thermalIncompressibleTwoPhaseMixture::kfDensityHarmonic() const
+{
+    const surfaceScalarField limitedAlpha1f
+    (
+        min(max(fvc::interpolate(alpha1_), scalar(0)), scalar(1))
+    );
+
+    return tmp<surfaceScalarField>
+    (
+		new surfaceScalarField
+        (
+            "kfHarmonic",
+			(
+				k1_*limitedAlpha1f/rho1_ 
+			  - (1.0 - limitedAlpha1f)*k2_/rho2_ 
+			)/(limitedAlpha1f/rho1_ - (1.0 - limitedAlpha1f)/rho2_)
         )
     );
 }
@@ -104,13 +148,14 @@ Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::cp()
 		min(max(alpha1_, scalar(0)), scalar(1))
 	);
 
-	//Calculate average cp
 	return tmp<volScalarField>
 	(
 		new volScalarField
 		(
 			"cp",
-		( cp1_*rho1_*limitedAlpha1 + cp2_*rho2_*(scalar(1) - limitedAlpha1) )/( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) )
+			( 
+				cp1_*rho1_*limitedAlpha1 + cp2_*rho2_*(scalar(1) - limitedAlpha1) 
+			)/( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) )
 		)
 	);
 }
@@ -122,13 +167,12 @@ Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::alph
 		min(max(alpha1_, scalar(0)), scalar(1))
 	);
 
-	//Calculate average alpha
 	return tmp<volScalarField>
 	(
 		new volScalarField
 		(
-			"alpha",
-			lambda() / ( cp() * ( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) ) )
+			"alphaEff",
+			k()/( cp()*( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) ) )
 		)
 	);
 }
