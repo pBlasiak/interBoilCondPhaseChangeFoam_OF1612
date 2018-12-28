@@ -84,68 +84,26 @@ Foam::phaseChangeTwoPhaseMixtures::Tanasawa::mDotAlphal() const
 	}
 	else if (cond_)
 	{
-		volScalarField mEvap0
-    	(
-    	    IOobject
-    	    (
-    	        "mEvap0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mEvap0", dimensionSet(1, -3, -1, 0, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
 			-mCoeff_*min(T_ - TSat_ ,T0)*calcGradAlphal()/sqrt(pow(TSat_,3.0)),
-			mEvap0*scalar(0)
+			mEvapAlphal_*scalar(0)
 		);
 	}
 	else if (evap_)
 	{
-		volScalarField mCond0
-    	(
-    	    IOobject
-    	    (
-    	        "mCond0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mCond0", dimensionSet(1, -3, -1, 0, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
-			mCond0*scalar(0),
+			mCondAlphal_*scalar(0),
 			-mCoeff_*max(T_ - TSat_ ,T0)*calcGradAlphal()/sqrt(pow(TSat_,3.0))
 		);
 	}
 	else 
 	{
-		volScalarField m0
-    	(
-    	    IOobject
-    	    (
-    	        "m0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("m0", dimensionSet(1, -3, -1, 0, 0, 0, 0), 0.0)
-    	);
-		
 		return Pair<tmp<volScalarField> >
 		(
-			m0*scalar(0),
-			m0*scalar(0)
+			mCondAlphal_*scalar(0),
+			mEvapAlphal_*scalar(0)
 		);
 	}
 }
@@ -168,70 +126,28 @@ Foam::phaseChangeTwoPhaseMixtures::Tanasawa::mDotP() const
 	}
 	else if (cond_)
 	{
-		volScalarField mEvapP0
-    	(
-    	    IOobject
-    	    (
-    	        "mEvapP0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mEvapP0", dimensionSet(0, -2, 1, 0, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
 			-mCoeff_*min(T_ - TSat_,T0)*calcGradAlphal()/sqrt(pow(TSat_,3.0))
 						*pos(p_-pSat_)/max(p_-pSat_,1E-6*pSat_)*(1.0-limitedAlpha1),
-			mEvapP0*scalar(0)
+			mEvapP_*scalar(0)
 		);
 	}
 	else if (evap_)
 	{
-		volScalarField mCondP0
-    	(
-    	    IOobject
-    	    (
-    	        "mCondP0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mCondP0", dimensionSet(0, -2, 1, 0, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
-			mCondP0*scalar(0),
+			mCondP_*scalar(0),
 			-mCoeff_*max(T_ - TSat_,T0)*calcGradAlphal()/sqrt(pow(TSat_,3.0))
 						*neg(p_-pSat_)/max(pSat_-p_,1E-05*pSat_)*limitedAlpha1
 		);
 	}
 	else 
 	{
-		volScalarField mP0
-    	(
-    	    IOobject
-    	    (
-    	        "mP0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mP0", dimensionSet(0, -2, 1, 0, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
-			mP0*scalar(0),
-			mP0*scalar(0)
+			mCondP_*scalar(0),
+			mEvapP_*scalar(0)
 		);
 	}
 }
@@ -253,70 +169,28 @@ Foam::phaseChangeTwoPhaseMixtures::Tanasawa::mDotT() const
 	}
 	else if (cond_)
 	{
-		volScalarField mEvapT0
-    	(
-    	    IOobject
-    	    (
-    	        "mEvapT0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mEvapT0", dimensionSet(1, -3, -1, -1, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
 			-mCoeff_*calcGradAlphal()/sqrt(pow(TSat_,3.0))
 						*neg(T_ - TSat_)*(1.0-limitedAlpha1),
-			mEvapT0*scalar(0)
+			mEvapT_*scalar(0)
 		);
 	}
 	else if (evap_)
 	{
-		volScalarField mCondT0
-    	(
-    	    IOobject
-    	    (
-    	        "mCondT0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mCondT0", dimensionSet(1, -3, -1, -1, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
-			mCondT0*scalar(0),
+			mCondT_*scalar(0),
 			mCoeff_*calcGradAlphal()/sqrt(pow(TSat_,3.0))
 						*limitedAlpha1*pos(T_ - TSat_)
 		);
 	}
 	else
 	{
-		volScalarField mT0
-    	(
-    	    IOobject
-    	    (
-    	        "mT0",
-    	        U_.time().timeName(),
-    	        U_.db(),
-				IOobject::NO_READ,
-				IOobject::NO_WRITE
-    	    ),
-    	    U_.mesh(),
-    	    dimensionedScalar("mT0", dimensionSet(1, -3, -1, -1, 0, 0, 0), 0.0)
-    	);
-
 		return Pair<tmp<volScalarField> >
 		(
-			mT0*scalar(0),
-			mT0*scalar(0)
+			mCondT_*scalar(0),
+			mEvapT_*scalar(0)
 		);
 	}
 }

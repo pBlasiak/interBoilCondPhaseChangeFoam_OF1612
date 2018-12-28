@@ -70,6 +70,84 @@ Foam::phaseChangeTwoPhaseMixture::phaseChangeTwoPhaseMixture
         U_.mesh(),
         dimensionedScalar("mEvap", dimensionSet(1, 0, -1, 0, 0, 0, 0), 0.0)
     ),
+	mCondAlphal_
+	(
+	    IOobject
+	    (
+	        "mCondAlphal",
+	        U_.time().timeName(),
+	        U_.db(),
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+	    ),
+	    U_.mesh(),
+	    dimensionedScalar("mCondAlphal", dimensionSet(1, -3, -1, 0, 0, 0, 0), 0.0)
+	),
+	mEvapAlphal_
+	(
+	    IOobject
+	    (
+	        "mEvapAlphal",
+	        U_.time().timeName(),
+	        U_.db(),
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+	    ),
+	    U_.mesh(),
+	    dimensionedScalar("mEvapAlphal", dimensionSet(1, -3, -1, 0, 0, 0, 0), 0.0)
+	),
+	mCondP_
+	(
+	    IOobject
+	    (
+	        "mCondP",
+	        U_.time().timeName(),
+	        U_.db(),
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+	    ),
+	    U_.mesh(),
+	    dimensionedScalar("mCondP", dimensionSet(0, -2, 1, 0, 0, 0, 0), 0.0)
+	),
+	mEvapP_
+	(
+	    IOobject
+	    (
+	        "mEvapP",
+	        U_.time().timeName(),
+	        U_.db(),
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+	    ),
+	    U_.mesh(),
+	    dimensionedScalar("mEvapP", dimensionSet(0, -2, 1, 0, 0, 0, 0), 0.0)
+	),
+	mCondT_
+	(
+	    IOobject
+	    (
+	        "mCondT",
+	        U_.time().timeName(),
+	        U_.db(),
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+	    ),
+	    U_.mesh(),
+	    dimensionedScalar("mCondT", dimensionSet(1, -3, -1, -1, 0, 0, 0), 0.0)
+	),
+	mEvapT_
+	(
+	    IOobject
+	    (
+	        "mEvapT",
+	        U_.time().timeName(),
+	        U_.db(),
+			IOobject::NO_READ,
+			IOobject::NO_WRITE
+	    ),
+	    U_.mesh(),
+	    dimensionedScalar("mEvapT", dimensionSet(1, -3, -1, -1, 0, 0, 0), 0.0)
+	),
 	p_(U_.db().lookupObject<volScalarField>("p")),
 	T_(U_.db().lookupObject<volScalarField>("T")),
     TSatG_("TSatGlobal", dimTemperature, lookup("TSatGlobal")),

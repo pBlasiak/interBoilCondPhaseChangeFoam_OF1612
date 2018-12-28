@@ -69,6 +69,18 @@ protected:
 		//- Vaporisation mass flux, kg/s (-)
 		volScalarField mEvap_;
 		
+		//- Used in mDotAlphal()
+		volScalarField mCondAlphal_;
+		volScalarField mEvapAlphal_;
+
+		//- Used in mDotP()
+		volScalarField mCondP_;
+		volScalarField mEvapP_;
+
+		//- Used in mDotT()
+		volScalarField mCondT_;
+		volScalarField mEvapT_;
+
         //- Reference to pressure field
         const volScalarField& p_;
 
