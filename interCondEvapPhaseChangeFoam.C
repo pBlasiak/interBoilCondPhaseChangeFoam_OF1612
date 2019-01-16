@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
         #include "CourantNo.H"
         #include "alphaCourantNo.H"
 		#include "FourierNo.H"
+		#include "CapilaryNo.H"
         #include "setDeltaT.H"
 
         runTime++;

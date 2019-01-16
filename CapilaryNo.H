@@ -2,8 +2,8 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
-     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE) Laboratory, PSU 
+    \\  /    A nd           | Copyright (C) 2011-2016 OpenFOAM Foundation
+     \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -22,33 +22,30 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    setDeltaT
+    FourierNo
 
 Description
-    Reset the timestep to maintain a constant maximum courant Number.
-    Reduction of time-step is immediate, but increase is damped to avoid
-    unstable oscillations.
+    Calculates and outputs the mean and maximum Capilary Numbers.
+	According to floquation:
+	https://www.cfd-online.com/Forums/openfoam-programming-development/189211-attempt-decrease-spurious-currents-vof.html
 
 \*---------------------------------------------------------------------------*/
 
-if (adjustTimeStep)
-{
-    scalar maxDeltaTFact =
-        min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ), 
-			 min(maxFourier/(FourierNum + SMALL), maxCapilary/(CapilaryNum + SMALL) ) );
+scalar maxCapilary
+(
+    readScalar(runTime.controlDict().lookup("maxCapilary"))
+);
 
-    scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
+scalar CapilaryNum = 0.0;
+scalar meanCapilaryNum = 0.0;
 
-    runTime.setDeltaT
-    (
-        min
-        (
-            deltaTFact*runTime.deltaTValue(),
-            maxDeltaT
-        )
-    );
+    CapilaryNum = gMax(  sqrt(mixture->rho()*pow(CellDims.field(), 3)/
+						(4.0*Foam::constant::mathematical::pi*interface.sigma().value()))  );
 
-    Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
-}
+    meanCapilaryNum = gAverage(  sqrt(mixture->rho()*pow(CellDims.field(), 3)/
+						(4.0*Foam::constant::mathematical::pi*interface.sigma().value()))  );
+
+Info<< "Capilary Number mean: " << meanCapilaryNum
+    << " max: " << CapilaryNum << endl;
 
 // ************************************************************************* //

@@ -98,6 +98,24 @@ Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::k() 
     );
 }
 
+Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::rho() const
+{
+    const volScalarField limitedAlpha1
+    (
+        min(max(alpha1_, scalar(0)), scalar(1))
+    );
+
+    return tmp<volScalarField>
+    (
+		new volScalarField
+        (
+            "rhoMixture",
+            limitedAlpha1*rho1_
+          + (scalar(1) - limitedAlpha1)*rho2_
+        )
+    );
+}
+
 Foam::tmp<Foam::surfaceScalarField> 
 Foam::thermalIncompressibleTwoPhaseMixture::kfHarmonic() const
 {
