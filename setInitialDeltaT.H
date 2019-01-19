@@ -2,9 +2,8 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
-     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE)
-                            | Laboratory, PSU 
+    \\  /    A nd           | Copyright (C) 2011-2015 OpenFOAM Foundation
+     \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -23,33 +22,27 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    setDeltaT
+    setInitialDeltaT
 
 Description
-    Reset the timestep to maintain a constant maximum courant Number.
-    Reduction of time-step is immediate, but increase is damped to avoid
-    unstable oscillations.
+    Set the initial timestep corresponding to the timestep adjustment
+    algorithm in setDeltaT but only if it would reduce the timestep.
 
 \*---------------------------------------------------------------------------*/
 
 if (adjustTimeStep)
 {
-    scalar maxDeltaTFact = maxGalusinskiVigneaux/(GalusinskiVigneauxNum + SMALL);
-        //min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ),
-        //     min(maxCapilary/(CapilaryNum + SMALL), maxGalusinskiVigneaux/(GalusinskiVigneauxNum + SMALL) ) );
-
-    scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
-
-    runTime.setDeltaT
-    (
-        min
+    if ((runTime.timeIndex() == 0) && (GalusinskiVigneauxNum > SMALL))
+    {
+        runTime.setDeltaT
         (
-            deltaTFact*runTime.deltaTValue(),
-            maxDeltaT
-        )
-    );
-
-    Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
+            min
+            (
+                maxGalusinskiVigneaux*runTime.deltaTValue()/GalusinskiVigneauxNum,
+                min(runTime.deltaTValue(), maxDeltaT)
+            )
+        );
+    }
 }
 
 // ************************************************************************* //

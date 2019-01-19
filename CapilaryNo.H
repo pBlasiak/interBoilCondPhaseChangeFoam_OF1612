@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    FourierNo
+    CapilaryNo
 
 Description
     Calculates and outputs the mean and maximum Capilary Numbers.
@@ -38,14 +38,18 @@ scalar maxCapilary
 
 scalar CapilaryNum = 0.0;
 scalar meanCapilaryNum = 0.0;
+scalar capilaryDt = 0.0;
 
-    CapilaryNum = gMax(  sqrt(mixture->rho()*pow(CellDims.field(), 3)/
-						(4.0*Foam::constant::mathematical::pi*interface.sigma().value()))  );
+    CapilaryNum = gMax(  sqrt(4.0*Foam::constant::mathematical::pi*interface.sigma().value()/
+							(mixture->rho()*pow(CellDims.field(), 3)))*runTime.deltaTValue() );
+    capilaryDt = gMin(  sqrt(mixture->rho()*pow(CellDims.field(), 3)/
+								(4.0*Foam::constant::mathematical::pi*interface.sigma().value())) );
 
-    meanCapilaryNum = gAverage(  sqrt(mixture->rho()*pow(CellDims.field(), 3)/
-						(4.0*Foam::constant::mathematical::pi*interface.sigma().value()))  );
+    meanCapilaryNum = gAverage(  sqrt(4.0*Foam::constant::mathematical::pi*interface.sigma().value()/
+							(mixture->rho()*pow(CellDims.field(), 3)))*runTime.deltaTValue() );
 
 Info<< "Capilary Number mean: " << meanCapilaryNum
     << " max: " << CapilaryNum << endl;
+Info<< "Capilary dt: " << capilaryDt << endl;
 
 // ************************************************************************* //

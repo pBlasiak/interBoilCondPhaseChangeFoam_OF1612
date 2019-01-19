@@ -2,9 +2,8 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015, Alex Rattner and Mahdi Nabil
-     \\/     M anipulation  | Multiscale Thermal Fluids and Energy (MTFE)
-                            | Laboratory, PSU 
+    \\  /    A nd           | Copyright (C) 2015 OpenFOAM Foundation
+     \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -23,33 +22,20 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Global
-    setDeltaT
+    readTimeControls
 
 Description
-    Reset the timestep to maintain a constant maximum courant Number.
-    Reduction of time-step is immediate, but increase is damped to avoid
-    unstable oscillations.
+    Read the control parameters used by setDeltaT
 
 \*---------------------------------------------------------------------------*/
 
-if (adjustTimeStep)
-{
-    scalar maxDeltaTFact = maxGalusinskiVigneaux/(GalusinskiVigneauxNum + SMALL);
-        //min( min( maxCo/(CoNum + SMALL), maxAlphaCo/(alphaCoNum + SMALL) ),
-        //     min(maxCapilary/(CapilaryNum + SMALL), maxGalusinskiVigneaux/(GalusinskiVigneauxNum + SMALL) ) );
+bool adjustTimeStep =
+    runTime.controlDict().lookupOrDefault("adjustTimeStep", false);
 
-    scalar deltaTFact = min(min(maxDeltaTFact, 1.0 + 0.1*maxDeltaTFact), 1.2);
+scalar maxGalusinskiVigneaux =
+    runTime.controlDict().lookupOrDefault<scalar>("maxGalusinskiVigneaux", 1.0);
 
-    runTime.setDeltaT
-    (
-        min
-        (
-            deltaTFact*runTime.deltaTValue(),
-            maxDeltaT
-        )
-    );
-
-    Info<< "deltaT = " <<  runTime.deltaTValue() << endl;
-}
+scalar maxDeltaT =
+    runTime.controlDict().lookupOrDefault<scalar>("maxDeltaT", GREAT);
 
 // ************************************************************************* //

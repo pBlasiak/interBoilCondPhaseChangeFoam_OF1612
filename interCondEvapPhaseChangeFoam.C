@@ -63,11 +63,12 @@ int main(int argc, char *argv[])
 
     #include "createFields.H"
     #include "createMRF.H"
-    #include "createFvOptions.H"
-    #include "createTimeControls.H"
-    #include "CourantNo.H"
-    #include "setInitialDeltaT.H"
+    #include "createFvOptions.H" 
+	#include "createTimeControls.H"
+    //#include "CourantNo.H"
     #include "getCellDims.H"
+	#include "GalusinskiVigneauxNo.H"
+    #include "setInitialDeltaT.H"
 
     turbulence->validate();
 
@@ -78,10 +79,11 @@ int main(int argc, char *argv[])
     while (runTime.run())
     {
         #include "createTimeControls.H"
-        #include "CourantNo.H"
-        #include "alphaCourantNo.H"
-		#include "FourierNo.H"
-		#include "CapilaryNo.H"
+        //#include "CourantNo.H"
+        //#include "alphaCourantNo.H"
+		//#include "FourierNo.H"
+		//#include "CapilaryNo.H"
+		#include "GalusinskiVigneauxNo.H"
         #include "setDeltaT.H"
 
         runTime++;

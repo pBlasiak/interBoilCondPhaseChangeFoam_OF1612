@@ -88,7 +88,7 @@ const dimensionedScalar& rho2 = mixture->rho2();
 //const dimensionedScalar& k2 = mixture->k2();
 const dimensionedScalar& cp1 = mixture->cp1();
 const dimensionedScalar& cp2 = mixture->cp2();
-const dimensionedScalar& hEvap = mixture->hEvap();
+//const dimensionedScalar& hEvap = mixture->hEvap();
 const dimensionedScalar& pSat = mixture->pSat();
 
 rho = alpha1*rho1 + alpha2*rho2;

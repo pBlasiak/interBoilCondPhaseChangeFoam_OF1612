@@ -36,14 +36,18 @@ scalar maxFourier
 
 scalar FourierNum = 0.0;
 scalar meanFourierNum = 0.0;
+scalar fourierDt = 0.0;
 
     FourierNum = gMax(  (mixture->alphaEff() + turbulence->nut())
 				            *runTime.deltaTValue()/pow(CellDims.field(), 2));
+
+    fourierDt = gMin(  pow(CellDims.field(), 2)/(mixture->alphaEff() + turbulence->nut()));
 
     meanFourierNum = gAverage(  (mixture->alphaEff() + turbulence->nut())
 				            *runTime.deltaTValue()/pow(CellDims.field(), 2));
 
 Info<< "Fourier Number mean: " << meanFourierNum
     << " max: " << FourierNum << endl;
+Info<< "Fourier dt: " << fourierDt << endl;
 
 // ************************************************************************* //
