@@ -190,7 +190,7 @@ Foam::tmp<Foam::volScalarField> Foam::thermalIncompressibleTwoPhaseMixture::alph
 		new volScalarField
 		(
 			"alphaEff",
-			k()/( cp()*( rho1_*limitedAlpha1 + rho2_*(scalar(1) - limitedAlpha1) ) )
+			k()/cp()/rho() 
 		)
 	);
 }

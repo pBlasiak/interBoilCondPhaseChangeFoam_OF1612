@@ -82,6 +82,7 @@ autoPtr<phaseChangeTwoPhaseMixture> mixture =
 volScalarField& alpha1(mixture->alpha1());
 volScalarField& alpha2(mixture->alpha2());
 
+
 const dimensionedScalar& rho1 = mixture->rho1();
 const dimensionedScalar& rho2 = mixture->rho2();
 //const dimensionedScalar& k1 = mixture->k1();
@@ -96,6 +97,39 @@ p = p_rgh + rho*gh;
 mixture->correct();
 volScalarField TSat = mixture->TSat();
 
+// Need to store for turbulentHeatFluxTemperature BC
+Info<< "Creating field alphaEff\n" << endl;
+volScalarField alphaEff
+(
+    IOobject
+    (
+        "alphaEff",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+	mesh,
+    dimensionedScalar("alphaEff0", dimensionSet(0,2,-1,0,0,0,0), 0)
+);
+alphaEff = mixture->alphaEff();
+
+// Need to store for turbulentHeatFluxTemperature BC
+Info<< "Creating field cp\n" << endl;
+volScalarField cp
+(
+    IOobject
+    (
+        "cp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+	mesh,
+    dimensionedScalar("cp00", dimensionSet(0,2,-2,-1,0,0,0), 0)
+);
+cp = mixture->cp();
 
 // Need to store rho for ddt(rhoCp, U)
 volScalarField rhoCp

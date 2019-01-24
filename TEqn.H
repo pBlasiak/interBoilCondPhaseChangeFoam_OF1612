@@ -5,13 +5,15 @@
 	    const volScalarField vDotcmvT(vDotcT - vDotvT);
 
 	TSat = mixture->TSat();
+	alphaEff = mixture->alphaEff();
+	cp = mixture->cp();
 
 	fvScalarMatrix TEqn
 	(
 		  fvm::ddt(T)
 		+ fvm::div(phi, T)
 	    - fvm::Sp(fvc::div(phi),T)
-		- fvm::laplacian(mixture->alphaEff(), T,"laplacian(alphaEff,T)")
+		- fvm::laplacian(alphaEff, T,"laplacian(alphaEff,T)")
 	 ==
 		  fvm::Sp(vDotcmvT/rhoCp, T) - vDotcmvT/rhoCp*TSat	
 	);
