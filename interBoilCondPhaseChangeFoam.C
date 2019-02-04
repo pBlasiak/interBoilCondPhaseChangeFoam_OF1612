@@ -22,7 +22,7 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    interCondEvapPhaseChangeFoam
+    interBoilCondPhaseChangeFoam
 
 Group
     grpMultiphaseSolvers
@@ -35,7 +35,7 @@ Description
     The momentum and other fluid properties are of the "mixture" and a
     single momentum equation is solved.
 
-    The set of phase-change models provided are designed to simulate evaporation
+    The set of phase-change models provided are designed to simulate boiling
     and condensation.
 
     Turbulence modelling is generic, i.e. laminar, RAS or LES may be selected.
