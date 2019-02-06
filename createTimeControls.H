@@ -35,6 +35,9 @@ bool adjustTimeStep =
 scalar maxGalusinskiVigneaux =
     runTime.controlDict().lookupOrDefault<scalar>("maxGalusinskiVigneaux", 1.0);
 
+scalar maxCo =
+	runTime.controlDict().lookupOrDefault<scalar>("maxCo", 1.0);
+
 scalar maxDeltaT =
     runTime.controlDict().lookupOrDefault<scalar>("maxDeltaT", GREAT);
 

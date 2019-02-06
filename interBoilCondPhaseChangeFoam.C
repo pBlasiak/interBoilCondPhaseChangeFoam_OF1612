@@ -29,7 +29,7 @@ Group
 
 Description
     Solver for 2 incompressible, immiscible fluids with phase-change
-    (condensation, evaporation).  Uses a VOF (volume of fluid) phase-fraction based
+    (boiling, condensation).  Uses a VOF (volume of fluid) phase-fraction based
     interface capturing approach.
 
     The momentum and other fluid properties are of the "mixture" and a

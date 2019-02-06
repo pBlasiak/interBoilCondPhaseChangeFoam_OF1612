@@ -22,23 +22,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    interPhaseChangeDyMFoam
+    interBoilCondPhaseChangeDyMFoam
 
 Group
     grpMultiphaseSolvers grpMovingMeshSolvers
 
 Description
-    Solver for 2 incompressible, isothermal immiscible fluids with phase-change
-    (e.g. cavitation).  Uses a VOF (volume of fluid) phase-fraction based
+    Solver for 2 incompressible, immiscible fluids with phase-change
+    (boiling, condensation).  Uses a VOF (volume of fluid) phase-fraction based
     interface capturing approach, with optional mesh motion and mesh topology
     changes including adaptive re-meshing.
 
     The momentum and other fluid properties are of the "mixture" and a
     single momentum equation is solved.
 
-    The set of phase-change models provided are designed to simulate cavitation
-    but other mechanisms of phase-change are supported within this solver
-    framework.
+    The set of phase-change models provided are designed to simulate boiling
+    and condensation.
 
     Turbulence modelling is generic, i.e. laminar, RAS or LES may be selected.
 
@@ -48,26 +47,29 @@ Description
 #include "dynamicFvMesh.H"
 #include "CMULES.H"
 #include "subCycle.H"
-#include "interfaceProperties.H"
+#include "smoothInterfaceProperties.H"
 #include "phaseChangeTwoPhaseMixture.H"
 #include "turbulentTransportModel.H"
 #include "pimpleControl.H"
 #include "fvOptions.H"
 #include "CorrectPhi.H"
+#include "wallFvPatch.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
+    #include "postProcess.H"
+
     #include "setRootCase.H"
     #include "createTime.H"
     #include "createDynamicFvMesh.H"
-
-    pimpleControl pimple(mesh);
-
-    #include "../interFoam/interDyMFoam/createControls.H"
+    #include "createControl.H"
+    #include "createTimeControls.H"
+    #include "../interFoam/interDyMFoam/createDyMControls.H"
     #include "initContinuityErrs.H"
     #include "createFields.H"
+    #include "createMRF.H"
     #include "createFvOptions.H"
 
     volScalarField rAU
@@ -86,6 +88,8 @@ int main(int argc, char *argv[])
 
     #include "createUf.H"
     #include "CourantNo.H"
+    #include "getCellDims.H"
+	#include "GalusinskiVigneauxNo.H"
     #include "setInitialDeltaT.H"
 
     turbulence->validate();
@@ -97,6 +101,7 @@ int main(int argc, char *argv[])
     while (runTime.run())
     {
         #include "../interFoam/interDyMFoam/readControls.H"
+		#include "GalusinskiVigneauxNo.H"
 
         // Store divU from the previous mesh so that it can be mapped
         // and used in correctPhi to ensure the corrected phi has the
@@ -166,6 +171,7 @@ int main(int argc, char *argv[])
             interface.correct();
 
             #include "UEqn.H"
+            #include "TEqn.H"
 
             // --- Pressure corrector loop
             while (pimple.correct())

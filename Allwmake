@@ -10,6 +10,6 @@ set -x
 
 wmake $targetType phaseChangeTwoPhaseMixtures
 wmake
-#wmake interPhaseChangeDyMFoam
+wmake interBoilCondPhaseChangeDyMFoam
 
 #------------------------------------------------------------------------------
