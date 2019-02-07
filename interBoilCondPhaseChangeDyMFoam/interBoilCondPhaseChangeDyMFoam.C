@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     );
 
     #include "createUf.H"
-    #include "CourantNo.H"
+//    #include "CourantNo.H"
     #include "getCellDims.H"
 	#include "GalusinskiVigneauxNo.H"
     #include "setInitialDeltaT.H"
@@ -100,7 +100,11 @@ int main(int argc, char *argv[])
 
     while (runTime.run())
     {
-        #include "../interFoam/interDyMFoam/readControls.H"
+        #include "createTimeControls.H"
+        //#include "CourantNo.H"
+        //#include "alphaCourantNo.H"
+		//#include "FourierNo.H"
+		//#include "CapilaryNo.H"
 		#include "GalusinskiVigneauxNo.H"
 
         // Store divU from the previous mesh so that it can be mapped
@@ -108,7 +112,7 @@ int main(int argc, char *argv[])
         // same divergence
         volScalarField divU("divU0", fvc::div(fvc::absolute(phi, U)));
 
-        #include "CourantNo.H"
+//        #include "CourantNo.H"
         #include "setDeltaT.H"
 
         runTime++;
@@ -165,7 +169,7 @@ int main(int argc, char *argv[])
                 dimensionedScalar("0", dimMass/dimTime, 0)
             );
 
-            mixture->correct();
+            mixture->correct(); // is it necessary?
 
             #include "alphaEqnSubCycle.H"
             interface.correct();
@@ -185,6 +189,50 @@ int main(int argc, char *argv[])
             }
         }
 
+        mixture->correct();
+
+
+		// added
+        surfaceScalarField gradT=fvc::snGrad(T);
+
+        surfaceScalarField heatFluxFromAlphaEff =
+			fvc::interpolate(alphaEff*cp*rho)*gradT;
+
+        const surfaceScalarField::Boundary& patchHeatFlux2 =
+                 heatFluxFromAlphaEff.boundaryField();
+
+        Info<< "\nWall heat fluxes from alphaEff" << endl;
+        forAll(patchHeatFlux2, patchi)
+        {
+           if (typeid(mesh.boundary()[patchi]) == typeid(wallFvPatch))
+            {
+                Info<< mesh.boundary()[patchi].name()
+                    << ": Total "
+                    << gSum
+                       (
+                           mesh.magSf().boundaryField()[patchi]
+                          *patchHeatFlux2[patchi]
+                       )
+                    << " [W] over "
+                    << gSum
+                       (
+                           mesh.magSf().boundaryField()[patchi]
+                       )
+                    << " [m2] ("
+                    << gSum
+                       (
+                           mesh.magSf().boundaryField()[patchi]
+                          *patchHeatFlux2[patchi]
+                       )/
+                       gSum 
+                       (
+                           mesh.magSf().boundaryField()[patchi]
+                       )
+                    << " [W/m2])"
+                    << endl;
+            }
+      }
+		// end added
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"

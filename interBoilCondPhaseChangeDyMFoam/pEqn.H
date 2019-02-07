@@ -8,6 +8,7 @@
         fvc::flux(HbyA)
       + fvc::interpolate(rho*rAU)*fvc::ddtCorr(U, Uf)
     );
+    MRF.makeRelative(phiHbyA);
 
     if (p_rgh.needReference())
     {
@@ -27,7 +28,8 @@
     phiHbyA += phig;
 
     // Update the pressure BCs to ensure flux consistency
-    constrainPressure(p_rgh, U, phiHbyA, rAUf);
+    constrainPressure(p_rgh, U, phiHbyA, rAUf);        // this is in interDyMFoam
+//    constrainPressure(p_rgh, U, phiHbyA, rAUf, MRF); // should not be like that?
 
     Pair<tmp<volScalarField>> vDotP = mixture->vDotP();
     const volScalarField& vDotcP = vDotP[0]();
@@ -38,8 +40,8 @@
         fvScalarMatrix p_rghEqn
         (
             fvc::div(phiHbyA) - fvm::laplacian(rAUf, p_rgh)
-          - (vDotvP - vDotcP)*(mixture->pSat() - rho*gh)
-          + fvm::Sp(vDotvP - vDotcP, p_rgh)
+		==
+			fvm::Sp(vDotcP-vDotvP,p_rgh) - (vDotcP-vDotvP)*(pSat-rho*gh) 
         );
 
         p_rghEqn.setReference(pRefCell, pRefValue);
@@ -49,6 +51,8 @@
         if (pimple.finalNonOrthogonalIter())
         {
             phi = phiHbyA + p_rghEqn.flux();
+
+            //p_rgh.relax(); // from interFoam
 
             U = HbyA + rAU*fvc::reconstruct((phig + p_rghEqn.flux())/rAUf);
             U.correctBoundaryConditions();
@@ -77,4 +81,6 @@
         );
         p_rgh = p - rho*gh;
     }
+    Info<< "min/max(U) = " << min(U).value() << ", "
+        << max(U).value() <<endl;
 }
