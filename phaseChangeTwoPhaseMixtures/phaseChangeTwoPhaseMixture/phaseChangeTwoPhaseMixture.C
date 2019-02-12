@@ -185,13 +185,13 @@ void Foam::phaseChangeTwoPhaseMixture::calcTSatLocal()
 {
 	if (TSatLocalPressure_)
 	{
-		Info <<"TSat is calculated based on local pressure field." << endl;
+		//Info <<"TSat is calculated based on local pressure field." << endl;
 	    TSat_ = 1.0/(1.0/TSatG_ - R_/hEvap_*log(max(p_/pSat_,1E-08)));
 	}
-	else
-	{
-		Info <<"TSat is constant, TSat = " << TSatG_ << endl;
-	}
+	//else
+	//{
+	//	Info <<"TSat is constant, TSat = " << TSatG_ << endl;
+	//}
 }
 
 Foam::Pair<Foam::tmp<Foam::volScalarField>>
