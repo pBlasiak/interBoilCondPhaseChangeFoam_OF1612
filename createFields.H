@@ -31,6 +31,25 @@ rho.oldTime();
 #include "readhRef.H"
 #include "gh.H"
 
+Info<< "Reading Prt\n" << endl;
+
+IOdictionary transportProperties
+(
+	IOobject
+	(
+		"transportProperties",
+		runTime.constant(),
+		mesh,
+		IOobject::MUST_READ,
+		IOobject::NO_WRITE
+	)
+);
+
+dimensionedScalar Prt
+(
+	transportProperties.lookup("Prt")
+);
+
 volScalarField p
 (
     IOobject
@@ -112,7 +131,22 @@ volScalarField alphaEff
 	mesh,
     dimensionedScalar("alphaEff0", dimensionSet(0,2,-1,0,0,0,0), 0)
 );
-alphaEff = mixture->alphaEff();
+
+// kinematic turbulent thermal thermal conductivity m2/s
+Info<< "Reading field alphat\n" << endl;
+volScalarField alphat
+(
+    IOobject
+    (
+        "alphat",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh
+);
+alphaEff = mixture->alphaEff() + alphat;
 
 // Need to store for turbulentHeatFluxTemperature BC
 Info<< "Creating field cp\n" << endl;

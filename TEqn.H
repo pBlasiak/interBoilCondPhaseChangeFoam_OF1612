@@ -5,7 +5,9 @@
 	    const volScalarField vDotcmvT(vDotcT - vDotvT);
 
 	TSat = mixture->TSat();
-	alphaEff = mixture->alphaEff();
+    alphat = turbulence->nut()/Prt;
+    alphat.correctBoundaryConditions();
+	alphaEff = mixture->alphaEff() + alphat;
 	cp = mixture->cp();
 
 	fvScalarMatrix TEqn
