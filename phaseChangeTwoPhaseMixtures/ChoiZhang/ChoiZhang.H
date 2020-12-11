@@ -2,48 +2,48 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 1991-2009 OpenCFD Ltd.
+    \\  /    A nd           | Copyright (C) 2011-2013 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
 
-    OpenFOAM is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Generac License as published by the
-    Free Software Foundation; either  2 of the License, or (at your
-    option) any later version.
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-    OpenFOAM is distributed in the ho it will be useful, but WITHOUT
-    ANY WARRANTY; without even the imarranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.he GNU General Public License
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
 
-    You should have received a copy oNU General Public License
-    along with OpenFOAM; if not, write Free Software Foundation,
-    Inc., 51 Franklin St, Fifth Floorn, MA 02110-1301 USA
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::phaseChangeTwoPhaseMixtures::Tanasawa
+    Foam::phaseChangeTwoPhaseMixtures::ChoiZhang
 
 Description
-    Tanasawa phase change model.
-	The model supports condensation and evaporation mass transfer.
+    ChoiZhang phase change model. It is based on saturation temperature.
+	It is Lee model with variable Cc.
+	For T < TSat => condensation occurs
+	and T > TSat => evaporation occurs
 
     Reference:
     \verbatim
-        Tanasawa, I.
-        "Advances in condensation heat transfer",
-        Advances in Heat Transfer, vol. 21, 1991, pp. 55-139.
+        J. Choi and Y. Zhang,
+        "Numerical simulation of oscillatory flow and heat transfer in pulsating heat pipes with multi-turns using OpenFOAM",
+		Numerical Heat Transfer, Part A: Applications, Volume 77, 2020.
     \endverbatim
 
-
 SourceFiles
-    Tanasawa.C
+    ChoiZhang.C
 
 \*--------------------------------------------------------------------*/
 
-#ifndef Tanasawa_H
-#define Tanasawa_H
+#ifndef ChoiZhang_H
+#define ChoiZhang_H
 
 #include "phaseChangeTwoPhaseMixture.H"
 
@@ -55,51 +55,45 @@ namespace phaseChangeTwoPhaseMixtures
 {
 
 /*--------------------------------------------------------------------*\
-                              Class Tanasawa
+                              Class ChoiZhang
 \*--------------------------------------------------------------------*/
 
-class Tanasawa
+class ChoiZhang
 :
     public phaseChangeTwoPhaseMixture
 {
     // Private data
 
-    	Switch cond_;
+        dimensionedScalar Cc_;
+        dimensionedScalar Cv_;
 
-    	Switch evap_;
+        dimensionedScalar mcCoeff_;
+        dimensionedScalar mvCoeff_;
 
-    	dimensionedScalar gamma_;
-
-        dimensionedScalar mCoeff_;
-		
-    // Private member functions
-
-        volScalarField calcGradAlphal() const;
 
 public:
 
     //- Runtime type information
-    TypeName("Tanasawa");
+    TypeName("ChoiZhang");
 
 
     // Constructors
 
         //- construct from components
-        Tanasawa
+        ChoiZhang
         (
             const volVectorField& U,
             const surfaceScalarField& phi
         );
 
 
-    // Destructor
-
-        virtual ~Tanasawa()
-        {}
+    //- Destructor
+    virtual ~ChoiZhang()
+    {}
 
 
     // Member Functions
-
+	
 
         //- Return the mass condensation and vaporisation rates as a
         //  coefficient to multiply by (1 - alphal) for the condensation rate
@@ -114,9 +108,13 @@ public:
         //- Return the mass condensation and vaporisation rates as coefficients
         //  to multiply by (T - TSat) in TEqn
         virtual Pair<tmp<volScalarField> > mDotT() const;
+		
+        //- Correct the phaseChange model
+        virtual void correct() override;
 
         //- Read the transportProperties dictionary and update
         virtual bool read();
+
 };
 
 
