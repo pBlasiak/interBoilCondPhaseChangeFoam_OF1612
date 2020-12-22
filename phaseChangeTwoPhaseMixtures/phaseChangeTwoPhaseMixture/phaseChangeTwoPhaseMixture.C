@@ -219,13 +219,13 @@ Foam::phaseChangeTwoPhaseMixture::vDotT() const
 	   );
 }
 
-Foam::Pair<Foam::tmp<Foam::volScalarField>>
+Foam::Pair<Foam::tmp<Foam::volScalarField> >
 Foam::phaseChangeTwoPhaseMixture::vDotP() const
 {
     dimensionedScalar pCoeff(1.0/rho1() - 1.0/rho2());
     Pair<tmp<volScalarField>> mDotP = this->mDotP();
 
-    return Pair<tmp<volScalarField>>(pCoeff*mDotP[0], pCoeff*mDotP[1]);
+    return Pair<tmp<volScalarField> >(pCoeff*mDotP[0], pCoeff*mDotP[1]);
 }
 
 void Foam::phaseChangeTwoPhaseMixture::correct()

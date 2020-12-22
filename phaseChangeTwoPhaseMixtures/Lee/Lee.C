@@ -86,7 +86,7 @@ Foam::phaseChangeTwoPhaseMixtures::Lee::mDotP() const
 		*pos(p_ - pSat_)/max(p_ - pSat_, 1E-8*pSat_),
 
         -mvCoeff_*limitedAlpha1*max(T_ - TSat_, T0)/TSat_
-		*neg(p_ - pSat_)/min(p_ - pSat_, 1E-8*pSat_)
+		*neg(p_ - pSat_)/max(pSat_ - p_, 1E-8*pSat_)
     );
 }
 
