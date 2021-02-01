@@ -1,7 +1,7 @@
 # interBoilCondPhaseChangeFoam
 This is a solver for boiling and condensation which is written based on OpenFOAM-v1612+ and solver interPhaseChangeFoam.
 ## key features
-* Smoothing of alphal filed to decrease spurious (parasitic) currents
+* Smoothing of alphal field to decrease spurious (parasitic) currents
 * Four mass transfer models 
 * Galusinsky-Vignoaux criterion for timestep
 * Mesh adaption solver
@@ -45,7 +45,7 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * [S-CLSVOF](https://www.cfd-online.com/Forums/openfoam-solving/129732-clsvof-interfoam.html)
 * [spurious currents discussion](https://www.cfd-online.com/Forums/openfoam-programming-development/189211-attempt-decrease-spurious-currents-vof.html)
 * [spurious currents discussion](https://github.com/floquation/OF-kva_interfaceProperties)
-* [Hakan Nillson's course - coupled LS and VOF](www.tfd.chalmers.se/~hani/kurser/OS_CFD_2015/SankarMenon/Report_SankarMenon.pdf)
+* [Hakan Nillson's course - coupled LS and VOF](http://www.tfd.chalmers.se/~hani/kurser/OS_CFD_2015/SankarMenon/Report_SankarMenon.pdf)
 * [spurious currents suppression method](https://www.tandfonline.com/doi/pdf/10.1080/10407782.2014.916109?needAccess=true)
 * [extra term in alphaEqn.H of interPhaseChangeFoam](https://www.cfd-online.com/Forums/openfoam-solving/138606-extra-term-alphaeqn-h-interphasechangefoam-version-2-3-0-a.html)
 * [mesh adaption in OpenFOAM](https://www.cfd-online.com/Forums/openfoam-solving/131509-how-use-mesh-adaptation-openfoam.html)
