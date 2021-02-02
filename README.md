@@ -59,6 +59,7 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 ## TODO
 * Level-Set method coupled with VOF
 * Adding new mass transfer models (e.g. sharp model)
+* Enabling conjugate heat transfer
 * Method to further reduce spurious currents
 * Geometric reconstruct of the interface
 
