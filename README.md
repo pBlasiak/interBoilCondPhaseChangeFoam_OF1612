@@ -1,6 +1,6 @@
 # interBoilCondPhaseChangeFoam
 This is a solver for boiling and condensation which is written based on OpenFOAM-v1612+ and solver interPhaseChangeFoam.
-## key features
+## Key features
 * Smoothing of alphal field to decrease spurious (parasitic) currents
 * Four mass transfer models 
 * Galusinsky-Vignoaux criterion for timestep
@@ -56,5 +56,10 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * [interFoam - Berberovic's article](https://journals.aps.org/pre/pdf/10.1103/PhysRevE.79.036306)
 
 
+## TODO
+* Level-Set method coupled with VOF
+* Adding new mass transfer models (e.g. sharp model)
+* Method to further reduce spurious currents
+* Geometric reconstruct of the interface
 
 
