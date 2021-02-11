@@ -64,5 +64,5 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * Geometric reconstruct of the interface
 
 ## Flowchart
-* [Flowchart](interBoilCondPhaseChangeFoam_flowchart.svg)
+* [Flowchart](./interBoilCondPhaseChangeFoam_flowchart.svg)
 
