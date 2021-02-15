@@ -63,5 +63,8 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * Geometric reconstruct of the interface
 
 ## Flowchart
+*****
+![alt text](./interBoilCondPhaseChangeFoam_flowchart.svg "Logo Title Text 1")
+*****
 * [Flowchart](https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612/blob/master/interBoilCondPhaseChangeFoam_flowchart.html)
 
