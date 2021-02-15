@@ -26,7 +26,6 @@ https://github.com/pBlasiak/src_OF1612
 9) cd ../TurbulenceModels
 10) ./Allwmake
 11) cd ../../applications/solvers/multiphase/interBoilCondPhaseChangeFoam
-
 12) copy to applications/solvers/multiphase/interBoilCondPhaseChangeFoam 
 https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 
@@ -64,5 +63,5 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * Geometric reconstruct of the interface
 
 ## Flowchart
-* [Flowchart](https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612/blob/master/interBoilCondPhaseChangeFoam_flowchart.drawio)
+* [Flowchart](https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612/blob/master/interBoilCondPhaseChangeFoam_flowchart.html)
 
