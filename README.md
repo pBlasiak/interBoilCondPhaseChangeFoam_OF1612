@@ -9,8 +9,6 @@ This is a solver for boiling and condensation which is written based on OpenFOAM
 ## Installation
 It is working on OpenFOAM-v1612+
 ```bash
-git clone https://github.com/NimaSam/phaseChangeHeatFoam/
-cd phaseChangeHeatFoam/Application/
 1) mkdir -p $FOAM_RUN
 
 2) cd $WM_PROJECT_USER_DIR
