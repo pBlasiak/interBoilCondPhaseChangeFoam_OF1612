@@ -50,6 +50,11 @@ dimensionedScalar Prt
 	transportProperties.lookup("Prt")
 );
 
+bool printWallHeatFluxes
+(
+	transportProperties.lookupOrDefault("printWallHeatFluxes", false)
+);
+
 volScalarField p
 (
     IOobject
@@ -179,6 +184,21 @@ volScalarField rhoCp
     rho1*alpha1*cp1 + rho2*alpha2*cp2
 );
 rhoCp.oldTime();
+
+surfaceScalarField gradT=fvc::snGrad(T);
+surfaceScalarField wallHeatFlux
+(
+    IOobject
+    (
+        "wallHeatFlux",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+	fvc::interpolate(alphaEff*cp*rho)*gradT
+);
+
 
 // Construct interface from alpha1 distribution
 smoothInterfaceProperties interface(alpha1, U, mixture());

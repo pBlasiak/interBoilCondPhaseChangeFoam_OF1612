@@ -128,48 +128,8 @@ int main(int argc, char *argv[])
 
         mixture->correct();
 
+		#include "calculateWallHeatFlux.H"
 
-		// added
-        surfaceScalarField gradT=fvc::snGrad(T);
-
-        surfaceScalarField heatFluxFromAlphaEff =
-			fvc::interpolate(alphaEff*cp*rho)*gradT;
-
-        const surfaceScalarField::Boundary& patchHeatFlux2 =
-                 heatFluxFromAlphaEff.boundaryField();
-
-        Info<< "\nWall heat fluxes from alphaEff" << endl;
-        forAll(patchHeatFlux2, patchi)
-        {
-           if (typeid(mesh.boundary()[patchi]) == typeid(wallFvPatch))
-            {
-                Info<< mesh.boundary()[patchi].name()
-                    << ": Total "
-                    << gSum
-                       (
-                           mesh.magSf().boundaryField()[patchi]
-                          *patchHeatFlux2[patchi]
-                       )
-                    << " [W] over "
-                    << gSum
-                       (
-                           mesh.magSf().boundaryField()[patchi]
-                       )
-                    << " [m2] ("
-                    << gSum
-                       (
-                           mesh.magSf().boundaryField()[patchi]
-                          *patchHeatFlux2[patchi]
-                       )/
-                       gSum 
-                       (
-                           mesh.magSf().boundaryField()[patchi]
-                       )
-                    << " [W/m2])"
-                    << endl;
-            }
-      }
-		// end added
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
