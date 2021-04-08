@@ -232,12 +232,16 @@ void Foam::phaseChangeTwoPhaseMixture::correct()
 {
 	calcTSatLocal();
 
+    volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));
+    const fvMesh& mesh = alpha1_.mesh();
+	// prawdopodobnie jest zle liczone mCond_ i mEvap
+	// raczej powinno byc policzone bez internalField 
+	// ewentualnie dodac boundaryField
+    mCond_.ref() = mDotAlphal()[0]().internalField()*(1.0 - limitedAlpha1.internalField())*mesh.V();
+    mEvap_.ref() = mDotAlphal()[1]().internalField()*limitedAlpha1.internalField()*mesh.V();
+
 	if (printPhaseChange_)
 	{
-		volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));
-		const fvMesh& mesh = alpha1_.mesh();
-		mCond_.ref() = mDotAlphal()[0]().internalField()*(1.0 - limitedAlpha1.internalField())*mesh.V();
-		mEvap_.ref() = mDotAlphal()[1]().internalField()*limitedAlpha1.internalField()*mesh.V();
     	Info<< "****Condensation rate: "
     	    << gSum(mCond())*hEvap_.value() << " W" << endl;
     	Info<< "****Evaporation rate: "
