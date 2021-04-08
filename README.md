@@ -59,6 +59,7 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * Enabling conjugate heat transfer
 * Method to further reduce spurious currents
 * Geometric reconstruct of the interface
+* Harmonic mean for thermal conductivity of the mixtures
 
 ## Flowchart
 *****

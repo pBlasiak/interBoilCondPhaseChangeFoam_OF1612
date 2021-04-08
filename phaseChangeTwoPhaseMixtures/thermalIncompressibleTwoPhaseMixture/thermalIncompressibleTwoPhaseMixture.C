@@ -56,7 +56,10 @@ Foam::thermalIncompressibleTwoPhaseMixture::thermalIncompressibleTwoPhaseMixture
     (
         "k2_",
         k1_.dimensions(),
-        subDict(phase2Name_).lookup("k")), cp1_ (
+        subDict(phase2Name_).lookup("k")
+	),
+    cp1_ 
+	(
         "cp1",
         dimEnergy/dimTemperature/dimMass,
         subDict(phase1Name_).lookup("cp")
