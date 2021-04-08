@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 
         mixture->correct();
 
-		#include "calculateWallHeatFlux.H"
+		#include "calcThermalResistancePHP.H"
 
         runTime.write();
 

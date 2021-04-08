@@ -55,6 +55,16 @@ bool printWallHeatFluxes
 	transportProperties.lookupOrDefault("printWallHeatFluxes", false)
 );
 
+dimensionedScalar thermalResistancePHP("thermalResistancePHP", dimEnergy/dimTime/dimTemperature, 0.0);
+word evapPatch
+(
+	transportProperties.lookup("evaporatorPatch")
+);
+word condPatch
+(
+	transportProperties.lookup("condenserPatch")
+);
+
 volScalarField p
 (
     IOobject

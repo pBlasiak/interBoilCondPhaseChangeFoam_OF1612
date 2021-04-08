@@ -2,6 +2,22 @@ gradT = fvc::snGrad(T);
 
 wallHeatFlux = fvc::interpolate(alphaEff*cp*rho)*gradT;
 
+const label evapPatchID = mesh.boundaryMesh().findPatchID(evapPatch);
+const label condPatchID = mesh.boundaryMesh().findPatchID(condPatch);
+const scalarField Tbe = T.boundaryField()[evapPatchID];
+const scalarField Tbc = T.boundaryField()[condPatchID];
+const dimensionedScalar Te = gSum(mesh.magSf().boundaryField()[evapPatchID]*Tbe)
+	/gSum(mesh.magSf().boundaryField()[evapPatchID]);
+const dimensionedScalar Tc = gSum(mesh.magSf().boundaryField()[condPatchID]*Tbc)
+	/gSum(mesh.magSf().boundaryField()[condPatchID]);
+thermalResistancePHP.value() = 
+	gSum
+    (
+        mesh.magSf().boundaryField()[evapPatchID]
+	   *wallHeatFlux.boundaryField()[evapPatchID]
+	)/(Te.value() - Tc.value());
+
+Info<< "\nThermal resistance of the PHP = " << thermalResistancePHP.value() << " [W/K]" << endl;
 
 if (printWallHeatFluxes)
 {
