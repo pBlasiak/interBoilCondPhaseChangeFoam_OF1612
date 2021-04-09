@@ -234,18 +234,49 @@ void Foam::phaseChangeTwoPhaseMixture::correct()
 
     volScalarField limitedAlpha1 = min(max(alpha1_, scalar(0)), scalar(1));
     const fvMesh& mesh = alpha1_.mesh();
+
+	// zeby przyspieszyc mozna wykluczyc adiabatic
+	forAll(mCond_, celli)
+	{
+		mCond_[celli] = mDotAlphal()[0]()[celli]*(1.0 - limitedAlpha1[celli])*mesh.V()[celli];
+	}
+	forAll(mCond_.boundaryFieldRef(), patchi)
+    {
+		fvPatchScalarField& pmCond = mCond_.boundaryFieldRef()[patchi];
+		const fvPatchScalarField& pmDotAlphal = mDotAlphal()[0]().boundaryField()[patchi];
+		const fvPatchScalarField& plimitedAlpha1 = limitedAlpha1.boundaryField()[patchi];
+        forAll (pmCond, facei)
+        {
+             pmCond[facei] = pmDotAlphal[facei]*(1.0 - plimitedAlpha1[facei])*mesh.V()[facei];
+        }
+    }
+
+	forAll(mEvap_, celli)
+	{
+		mEvap_[celli] = mDotAlphal()[1]()[celli]*(1.0 - limitedAlpha1[celli])*mesh.V()[celli];
+	}
+	forAll(mEvap_.boundaryFieldRef(), patchi)
+    {
+		fvPatchScalarField& pmEvap = mEvap_.boundaryFieldRef()[patchi];
+		const fvPatchScalarField& pmDotAlphal = mDotAlphal()[1]().boundaryField()[patchi];
+		const fvPatchScalarField& plimitedAlpha1 = limitedAlpha1.boundaryField()[patchi];
+        forAll (pmEvap, facei)
+        {
+             pmEvap[facei] = pmDotAlphal[facei]*(1.0 - plimitedAlpha1[facei])*mesh.V()[facei];
+        }
+    }
 	// prawdopodobnie jest zle liczone mCond_ i mEvap
 	// raczej powinno byc policzone bez internalField 
 	// ewentualnie dodac boundaryField
-    mCond_.ref() = mDotAlphal()[0]().internalField()*(1.0 - limitedAlpha1.internalField())*mesh.V();
-    mEvap_.ref() = mDotAlphal()[1]().internalField()*limitedAlpha1.internalField()*mesh.V();
+    //mCond_.ref() = mDotAlphal()[0]().internalField()*(1.0 - limitedAlpha1.internalField())*mesh.V();
+    //mEvap_.ref() = mDotAlphal()[1]().internalField()*limitedAlpha1.internalField()*mesh.V();
 
 	if (printPhaseChange_)
 	{
     	Info<< "****Condensation rate: "
-    	    << gSum(mCond())*hEvap_.value() << " W" << endl;
+    	    << gSum(mCond().boundaryField())*hEvap_.value() << " W" << endl;
     	Info<< "****Evaporation rate: "
-    	    << gSum(mEvap())*hEvap_.value() << " W" << endl;
+    	    << gSum(mEvap().boundaryField())*hEvap_.value() << " W" << endl;
 	}
 }
 
