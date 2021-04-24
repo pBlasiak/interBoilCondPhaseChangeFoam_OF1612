@@ -11,13 +11,14 @@ const dimensionedScalar Te = gSum(mesh.magSf().boundaryField()[evapPatchID]*Tbe)
 const dimensionedScalar Tc = gSum(mesh.magSf().boundaryField()[condPatchID]*Tbc)
 	/gSum(mesh.magSf().boundaryField()[condPatchID]);
 thermalResistancePHP.value() = 
+	(Te.value() - Tc.value())/
 	gSum
     (
         mesh.magSf().boundaryField()[evapPatchID]
 	   *wallHeatFlux.boundaryField()[evapPatchID]
-	)/(Te.value() - Tc.value());
+	);
 
-Info<< "\nThermal resistance of the PHP = " << thermalResistancePHP.value() << " [W/K]" << endl;
+Info<< "\nThermal resistance of the PHP = " << thermalResistancePHP.value() << " [K/W]" << endl;
 
 if (printWallHeatFluxes)
 {
