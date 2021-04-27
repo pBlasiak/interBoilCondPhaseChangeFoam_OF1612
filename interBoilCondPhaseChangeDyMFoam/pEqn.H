@@ -31,7 +31,7 @@
     constrainPressure(p_rgh, U, phiHbyA, rAUf);        // this is in interDyMFoam
 //    constrainPressure(p_rgh, U, phiHbyA, rAUf, MRF); // should not be like that?
 
-    Pair<tmp<volScalarField>> vDotP = mixture->vDotP();
+    Pair<tmp<volScalarField> > vDotP = mixture->vDotP();
     const volScalarField& vDotcP = vDotP[0]();
     const volScalarField& vDotvP = vDotP[1]();
 

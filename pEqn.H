@@ -25,7 +25,7 @@
 //    constrainPressure(p_rgh, U, phiHbyA, rAUf);
     constrainPressure(p_rgh, U, phiHbyA, rAUf, MRF);
 
-    Pair<tmp<volScalarField>> vDotP = mixture->vDotP();
+    Pair<tmp<volScalarField> > vDotP = mixture->vDotP();
     const volScalarField& vDotcP = vDotP[0]();
     const volScalarField& vDotvP = vDotP[1]();
 

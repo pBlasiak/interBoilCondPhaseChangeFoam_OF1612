@@ -217,11 +217,11 @@ public:
         //  coefficient to multiply by (1 - alphal) for the condensation rate
         //  and a coefficient to multiply by alphal for the vaporisation rate
 		//  in alphaEqn
-        virtual Pair<tmp<volScalarField>> mDotAlphal() const = 0;
+        virtual Pair<tmp<volScalarField> > mDotAlphal() const = 0;
 
         //- Return the mass condensation and vaporisation rates as coefficients
         //  to multiply by (p - pSat) in pEqn
-        virtual Pair<tmp<volScalarField>> mDotP() const = 0;
+        virtual Pair<tmp<volScalarField> > mDotP() const = 0;
 
         //- Return the mass condensation and vaporisation rates as coefficients
         //  to multiply by (T - TSat) in TEqn
@@ -231,15 +231,15 @@ public:
         //  coefficient to multiply by (1 - alphal) for the condensation rate
         //  and a coefficient to multiply by alphal for the vaporisation rate
 		//  in alphaEqn
-        Pair<tmp<volScalarField>> vDotAlphal() const;
+        Pair<tmp<volScalarField> > vDotAlphal() const;
 
         //- Return the volumetric condensation and vaporisation rates as
         //  coefficients to multiply by (p - pSat)
-        Pair<tmp<volScalarField>> vDotP() const;
+        Pair<tmp<volScalarField> > vDotP() const;
 		
         //- Return the volumetric condensation and vaporisation rates as
         //  coefficients to multiply by (T - TSat)
-        Pair<tmp<volScalarField>> vDotT() const;
+        Pair<tmp<volScalarField> > vDotT() const;
 
         //- Correct the phaseChange model
         virtual void correct();
