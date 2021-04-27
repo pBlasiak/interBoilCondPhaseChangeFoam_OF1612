@@ -1,35 +1,35 @@
-    MRF.correctBoundaryVelocity(U);
+MRF.correctBoundaryVelocity(U);
 
-    fvVectorMatrix UEqn
+fvVectorMatrix UEqn
+(
+    fvm::ddt(rho, U)
+  + fvm::div(rhoPhi, U)
+  + MRF.DDt(rho, U)
+  - fvm::Sp(fvc::ddt(rho) + fvc::div(rhoPhi), U)
+  + turbulence->divDevRhoReff(rho, U)
+ ==
+    fvOptions(rho, U)
+);
+
+UEqn.relax();
+
+fvOptions.constrain(UEqn);
+
+if (pimple.momentumPredictor())
+{
+    solve
     (
-        fvm::ddt(rho, U)
-      + fvm::div(rhoPhi, U)
-      + MRF.DDt(rho, U)
-      - fvm::Sp(fvc::ddt(rho) + fvc::div(rhoPhi), U)
-      + turbulence->divDevRhoReff(rho, U)
+        UEqn
      ==
-        fvOptions(rho, U)
+        fvc::reconstruct
+        (
+            (
+                interface.surfaceTensionForce()
+              - ghf*fvc::snGrad(rho)
+              - fvc::snGrad(p_rgh)
+            ) * mesh.magSf()
+        )
     );
 
-    UEqn.relax();
-
-    fvOptions.constrain(UEqn);
-
-    if (pimple.momentumPredictor())
-    {
-        solve
-        (
-            UEqn
-         ==
-            fvc::reconstruct
-            (
-                (
-                    interface.surfaceTensionForce()
-                  - ghf*fvc::snGrad(rho)
-                  - fvc::snGrad(p_rgh)
-                ) * mesh.magSf()
-            )
-        );
-
-        fvOptions.correct(U);
-    }
+    fvOptions.correct(U);
+}
