@@ -53,6 +53,8 @@ Foam::phaseChangeTwoPhaseMixtures::Tanasawa::Tanasawa
     cond_(phaseChangeTwoPhaseMixtureCoeffs_.lookup("condensation")),
     evap_(phaseChangeTwoPhaseMixtureCoeffs_.lookup("evaporation")),
     gamma_(phaseChangeTwoPhaseMixtureCoeffs_.lookup("gamma")),
+	// czy nie powinno byc dla wrzenia mnozone przez rho1?
+	// czyli czy nie powinno byc mvCoeff i mlCoeff?
    	mCoeff_(2.0*gamma_/(2.0 - gamma_)/sqrt(2.0*M_PI*R_)*hEvap_*rho2())
 {
 	Info<< "Tanasawa model settings:  " << endl;

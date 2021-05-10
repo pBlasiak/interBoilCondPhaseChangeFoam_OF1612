@@ -50,6 +50,11 @@ dimensionedScalar Prt
 	transportProperties.lookup("Prt")
 );
 
+bool calcPHPThermRes
+(
+	transportProperties.lookupOrDefault("calcPHPThermalResistance", false)
+);
+
 bool printWallHeatFluxes
 (
 	transportProperties.lookupOrDefault("printWallHeatFluxes", false)
