@@ -3,6 +3,7 @@ cd ${0%/*} || exit 1    # Run from this directory
 set -x
 
 wclean libso phaseChangeTwoPhaseMixtures
+wclean libso functionObjects/field/thermalResistancePHP
 wclean
 wclean interPhaseChangeDyMFoam
 

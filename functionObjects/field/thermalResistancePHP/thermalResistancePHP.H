@@ -48,9 +48,9 @@ Usage
 
     Where the entries comprise:
     \table
-        Property | Description                | Required   | Default value
+        Property | Description                        | Required   | Default value
         type     | type name: thermalResistancePHP    | yes        |
-        patches  | list of patches to process | no         | all wall patches
+        patches  | list of patches to process         | no         | all wall patches
     \endtable
 
 See also
@@ -94,19 +94,23 @@ protected:
     // Protected data
 
         //- Optional list of patches to process
-        labelHashSet patchSet_;
+        labelHashSet evapPatchSet_;
+        labelHashSet condPatchSet_;
 
+		
 
     // Protected Member Functions
 
         //- File header information
         virtual void writeFileHeader(Ostream& os) const;
 
-        //- Calculate the heat-flux
-        void calcHeatFlux
+        //- Calculate the thermal resistance of a PHP
+        void calcThermalResistancePHP
         (
             const volScalarField& alpha,
-            const volScalarField& he,
+            const volScalarField& T,
+            const volScalarField& cp,
+            const volScalarField& rho,
             volScalarField& thermalResistancePHP
         );
 

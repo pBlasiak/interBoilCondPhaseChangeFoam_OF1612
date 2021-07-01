@@ -47,7 +47,7 @@ namespace functionObjects
 void Foam::functionObjects::thermalResistancePHP::writeFileHeader(Ostream& os) const
 {
     // Add headers to output data
-    writeHeader(os, "Wall heat-flux");
+    writeHeader(os, "Thermal resistance");
     writeCommented(os, "Time");
     writeTabbed(os, "patch");
     writeTabbed(os, "min");
@@ -57,36 +57,59 @@ void Foam::functionObjects::thermalResistancePHP::writeFileHeader(Ostream& os) c
 }
 
 
-void Foam::functionObjects::thermalResistancePHP::calcHeatFlux
+void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
 (
     const volScalarField& alpha,
-    const volScalarField& he,
+    const volScalarField& T,
+    const volScalarField& cp,
+    const volScalarField& rho,
     volScalarField& thermalResistancePHP
 )
 {
-    surfaceScalarField heatFlux(fvc::interpolate(alpha)*fvc::snGrad(he));
+    surfaceScalarField heatFlux(fvc::interpolate(alpha*cp*rho)*fvc::snGrad(T));
 
     volScalarField::Boundary& thermalResistancePHPBf = thermalResistancePHP.boundaryFieldRef();
 
     const surfaceScalarField::Boundary& heatFluxBf = heatFlux.boundaryField();
 
-	thermalResistancePHPBf[evapPatch_] = heatFluxBf[evapPatch_];
-    //forAll(thermalResistancePHPBf, patchi)
-    //{
-    //    thermalResistancePHPBf[patchi] = heatFluxBf[patchi];
-    //}
+    const volScalarField::Boundary& TBf = T.boundaryField();
 
-    //if (foundObject<volScalarField>("Qr"))
-    //{
-    //    const volScalarField& Qr = lookupObject<volScalarField>("Qr");
+	dimensionedScalar Tbe;
+	dimensionedScalar Ae;
+	forAll(evapPatchSet_, patchi)
+	{
+		forAll(TBf, patchID)
+		{
+			Tbe += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
+			Ae  += mesh_.magSf().boundaryField()[patchi][patchID];
+		}
+	}
+	dimensionedScalar TevapAve = Tbe/Ae;
+	Info<< "TevapAve = " << TevapAve << endl;
+		
+	dimensionedScalar Tbc;
+	dimensionedScalar Ac;
+	forAll(condPatchSet_, patchi)
+	{
+		forAll(TBf, patchID)
+		{
+			Tbc += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
+			Ac  += mesh_.magSf().boundaryField()[patchi][patchID];
+		}
+	}
+	dimensionedScalar TcondAve = Tbc/Ac;
+	Info<< "TcondAve = " << TcondAve << endl;
 
-    //    const volScalarField::Boundary& radHeatFluxBf = Qr.boundaryField();
+	dimensionedScalar Q;
+	forAll(evapPatchSet_, patchi)
+	{
+		forAll(heatFluxBf, patchID)
+		{
+			Q += mesh_.magSf().boundaryField()[patchi][patchID]*heatFluxBf[patchi][patchID];
+		}
+	}
 
-    //    forAll(thermalResistancePHPBf, patchi)
-    //    {
-    //        thermalResistancePHPBf[patchi] += radHeatFluxBf[patchi];
-    //    }
-    //}
+	thermalResistancePHP = (TevapAve - TcondAve)/Q;
 }
 
 
@@ -101,7 +124,8 @@ Foam::functionObjects::thermalResistancePHP::thermalResistancePHP
 :
     fvMeshFunctionObject(name, runTime, dict),
     writeFile(obr_, name, typeName, dict),
-    patchSet_()
+    evapPatchSet_(),
+    condPatchSet_()
 {
     volScalarField* thermalResistancePHPPtr
     (
@@ -116,7 +140,7 @@ Foam::functionObjects::thermalResistancePHP::thermalResistancePHP
                 IOobject::NO_WRITE
             ),
             mesh_,
-            dimensionedScalar("0", dimMass/pow3(dimTime), 0)
+            dimensionedScalar("0", dimTemperature/dimPower, 0)
         )
     );
 
@@ -141,21 +165,21 @@ bool Foam::functionObjects::thermalResistancePHP::read(const dictionary& dict)
 
     const polyBoundaryMesh& pbm = mesh_.boundaryMesh();
 
-    patchSet_ =
+    evapPatchSet_ =
         mesh_.boundaryMesh().patchSet
         (
-            wordReList(dict.lookupOrDefault("patches", wordReList()))
+            wordReList(dict.lookupOrDefault("evapPatch", wordReList()))
         );
 
     Info<< type() << " " << name() << ":" << nl;
 
-    if (patchSet_.empty())
+    if (evapPatchSet_.empty())
     {
         forAll(pbm, patchi)
         {
             if (isA<wallPolyPatch>(pbm[patchi]))
             {
-                patchSet_.insert(patchi);
+                evapPatchSet_.insert(patchi);
             }
         }
 
@@ -163,9 +187,9 @@ bool Foam::functionObjects::thermalResistancePHP::read(const dictionary& dict)
     }
     else
     {
-        Info<< "    processing wall patches: " << nl;
+        Info<< "    processing evaporator patches: " << nl;
         labelHashSet filteredPatchSet;
-        forAllConstIter(labelHashSet, patchSet_, iter)
+        forAllConstIter(labelHashSet, evapPatchSet_, iter)
         {
             label patchi = iter.key();
             if (isA<wallPolyPatch>(pbm[patchi]))
@@ -183,7 +207,52 @@ bool Foam::functionObjects::thermalResistancePHP::read(const dictionary& dict)
 
         Info<< endl;
 
-        patchSet_ = filteredPatchSet;
+        evapPatchSet_ = filteredPatchSet;
+    }
+
+    condPatchSet_ =
+        mesh_.boundaryMesh().patchSet
+        (
+            wordReList(dict.lookupOrDefault("condPatch", wordReList()))
+        );
+
+    Info<< type() << " " << name() << ":" << nl;
+
+    if (condPatchSet_.empty())
+    {
+        forAll(pbm, patchi)
+        {
+            if (isA<wallPolyPatch>(pbm[patchi]))
+            {
+                condPatchSet_.insert(patchi);
+            }
+        }
+
+        Info<< "    processing all wall patches" << nl << endl;
+    }
+    else
+    {
+        Info<< "    processing condenser patches: " << nl;
+        labelHashSet filteredPatchSet;
+        forAllConstIter(labelHashSet, condPatchSet_, iter)
+        {
+            label patchi = iter.key();
+            if (isA<wallPolyPatch>(pbm[patchi]))
+            {
+                filteredPatchSet.insert(patchi);
+                Info<< "        " << pbm[patchi].name() << endl;
+            }
+            else
+            {
+                WarningInFunction
+                    << "Requested wall heat-flux on non-wall boundary "
+                    << "type patch: " << pbm[patchi].name() << endl;
+            }
+        }
+
+        Info<< endl;
+
+        condPatchSet_ = filteredPatchSet;
     }
 
     return true;
@@ -197,51 +266,23 @@ bool Foam::functionObjects::thermalResistancePHP::execute()
         lookupObject<volScalarField>(type())
     );
 
-    const scalarField& alphaEffp =
-        patch().lookupPatchField<volScalarField, scalar>(alphaEffName_);
-		const scalarField& cp0 =
-			patch().lookupPatchField<volScalarField, scalar>("cp");
-		const scalarField& rho =
-			patch().lookupPatchField<volScalarField, scalar>("rho");
-    //if
-    //(
-    //    foundObject<compressible::turbulenceModel>
-    //    (
-    //        turbulenceModel::propertiesName
-    //    )
-    //)
-    //{
-    //    const compressible::turbulenceModel& turbModel =
-    //        lookupObject<compressible::turbulenceModel>
-    //        (
-    //            turbulenceModel::propertiesName
-    //        );
+    const volScalarField& alphaEffp =
+        lookupObject<volScalarField>("alphaEff");
+    const volScalarField& T =
+        lookupObject<volScalarField>("T");
+    const volScalarField& cp =
+        lookupObject<volScalarField>("cp");
+    const volScalarField& rho =
+        lookupObject<volScalarField>("rho");
 
-    //    calcHeatFlux
-    //    (
-    //        turbModel.alphaEff()(),
-    //        turbModel.transport().he(),
-    //        thermalResistancePHP
-    //    );
-    //}
-    //else if (foundObject<fluidThermo>(fluidThermo::dictName))
-    //{
-    //    const fluidThermo& thermo =
-    //        lookupObject<fluidThermo>(fluidThermo::dictName);
-
-    //    calcHeatFlux
-    //    (
-    //        thermo.alpha(),
-    //        thermo.he(),
-    //        thermalResistancePHP
-    //    );
-    //}
-    //else
-    //{
-    //    FatalErrorInFunction
-    //        << "Unable to find compressible turbulence model in the "
-    //        << "database" << exit(FatalError);
-    //}
+    calcThermalResistancePHP
+    (
+	    alphaEffp,
+		T,
+		cp, 
+		rho,
+        thermalResistancePHP
+    );
 
     return true;
 }
@@ -261,7 +302,7 @@ bool Foam::functionObjects::thermalResistancePHP::write()
     const surfaceScalarField::Boundary& magSf =
         mesh_.magSf().boundaryField();
 
-    forAllConstIter(labelHashSet, patchSet_, iter)
+    forAllConstIter(labelHashSet, evapPatchSet_, iter)
     {
         label patchi = iter.key();
         const fvPatch& pp = patches[patchi];

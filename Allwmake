@@ -9,6 +9,7 @@ targetType=libso
 set -x
 
 wmake $targetType phaseChangeTwoPhaseMixtures
+wmake $targetType functionObjects/field/thermalResistancePHP
 wmake
 wmake interBoilCondPhaseChangeDyMFoam
 
