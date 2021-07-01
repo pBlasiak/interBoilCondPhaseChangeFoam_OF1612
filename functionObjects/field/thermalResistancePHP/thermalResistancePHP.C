@@ -74,38 +74,38 @@ void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
 
     const volScalarField::Boundary& TBf = T.boundaryField();
 
-	dimensionedScalar Tbe;
-	dimensionedScalar Ae;
+	dimensionedScalar Tbe("Tbe0", dimTemperature*dimArea, 0.0);
+	dimensionedScalar Ae("Ae0", dimArea, 0.0);
 	forAll(evapPatchSet_, patchi)
 	{
 		forAll(TBf, patchID)
 		{
-			Tbe += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
-			Ae  += mesh_.magSf().boundaryField()[patchi][patchID];
+			Tbe.value() += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
+			Ae.value()  += mesh_.magSf().boundaryField()[patchi][patchID];
 		}
 	}
 	dimensionedScalar TevapAve = Tbe/Ae;
 	Info<< "TevapAve = " << TevapAve << endl;
 		
-	dimensionedScalar Tbc;
-	dimensionedScalar Ac;
+	dimensionedScalar Tbc("Tbc0", dimTemperature*dimArea, 0.0);
+	dimensionedScalar Ac("Ac0", dimArea, 0.0);
 	forAll(condPatchSet_, patchi)
 	{
 		forAll(TBf, patchID)
 		{
-			Tbc += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
-			Ac  += mesh_.magSf().boundaryField()[patchi][patchID];
+			Tbc.value() += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
+			Ac.value()  += mesh_.magSf().boundaryField()[patchi][patchID];
 		}
 	}
 	dimensionedScalar TcondAve = Tbc/Ac;
 	Info<< "TcondAve = " << TcondAve << endl;
 
-	dimensionedScalar Q;
+	dimensionedScalar Q("Q0", dimPower, 0.0);
 	forAll(evapPatchSet_, patchi)
 	{
 		forAll(heatFluxBf, patchID)
 		{
-			Q += mesh_.magSf().boundaryField()[patchi][patchID]*heatFluxBf[patchi][patchID];
+			Q.value() += mesh_.magSf().boundaryField()[patchi][patchID]*heatFluxBf[patchi][patchID];
 		}
 	}
 
