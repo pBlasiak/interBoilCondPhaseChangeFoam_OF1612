@@ -65,9 +65,8 @@ void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
     volScalarField& thermalResistancePHP
 )
 {
+	// calculates heat flux on each patch
     surfaceScalarField heatFlux(fvc::interpolate(alpha*cp*rho)*fvc::snGrad(T));
-
-    volScalarField::Boundary& thermalResistancePHPBf = thermalResistancePHP.boundaryFieldRef();
 
     const surfaceScalarField::Boundary& heatFluxBf = heatFlux.boundaryField();
 
@@ -77,8 +76,8 @@ void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
     forAllConstIter(labelHashSet, evapPatchSet_, iter)
     {
         label patchi = iter.key();
-	    	TevapAve.value() = gSum(mesh_.magSf().boundaryField()[patchi]*TBf[patchi])
-				/gSum(mesh_.magSf().boundaryField()[patchi]);
+	    TevapAve.value() = gSum(mesh_.magSf().boundaryField()[patchi]*TBf[patchi])
+			/gSum(mesh_.magSf().boundaryField()[patchi]);
     }
 
 	//Info<< "TevapAve = " << TevapAve << endl;
@@ -87,8 +86,8 @@ void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
     forAllConstIter(labelHashSet, condPatchSet_, iter)
     {
         label patchi = iter.key();
-	    	TcondAve.value()= gSum(mesh_.magSf().boundaryField()[patchi]*TBf[patchi])
-				/gSum(mesh_.magSf().boundaryField()[patchi]);
+	    TcondAve.value()= gSum(mesh_.magSf().boundaryField()[patchi]*TBf[patchi])
+			/gSum(mesh_.magSf().boundaryField()[patchi]);
     }
 
 	//Info<< "TcondAve = " << TcondAve << endl;
@@ -97,7 +96,7 @@ void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
     forAllConstIter(labelHashSet, evapPatchSet_, iter)
     {
         label patchi = iter.key();
-	    	Q.value() = gSum(mesh_.magSf().boundaryField()[patchi]*heatFluxBf[patchi]);
+	    Q.value() = gSum(mesh_.magSf().boundaryField()[patchi]*heatFluxBf[patchi]);
     }
 	//Info<< "Q = " << Q << endl;
 
@@ -293,9 +292,6 @@ bool Foam::functionObjects::thermalResistancePHP::write()
     thermalResistancePHP.write();
 
     const fvPatchList& patches = mesh_.boundary();
-
-    const surfaceScalarField::Boundary& magSf =
-        mesh_.magSf().boundaryField();
 
     forAllConstIter(labelHashSet, evapPatchSet_, iter)
     {
