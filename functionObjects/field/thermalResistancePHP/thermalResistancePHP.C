@@ -52,7 +52,6 @@ void Foam::functionObjects::thermalResistancePHP::writeFileHeader(Ostream& os) c
     writeTabbed(os, "patch");
     writeTabbed(os, "min");
     writeTabbed(os, "max");
-    writeTabbed(os, "integral");
     os  << endl;
 }
 
