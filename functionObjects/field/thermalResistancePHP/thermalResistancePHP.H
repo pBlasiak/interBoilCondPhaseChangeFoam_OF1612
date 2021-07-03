@@ -29,28 +29,48 @@ Group
 
 Description
     Calculates and write the thermal resistance of a PHP as the
-    dimensionedScalar 'thermalResistancePHP'.
+    volScalarField 'thermalResistancePHP'.
 
     All wall patches are included by default; to restrict the calculation to
-    certain patches, use the optional 'patches' entry.
+    certain evaporator and condenser patches, use the optional 
+	'evapPatch' and 'condPatch' entries.
 
 Usage
     Example of function object specification:
     \verbatim
     thermalResistancePHP1
-    {
-        type        thermalResistancePHP;
-        libs        ("libfieldFunctionObjects.so");
-        ...
-        patches     (".*Wall");
-    }
+	{
+	    // Mandatory entries (unmodifiable)
+	    type            thermalResistancePHP;
+	    libs            ("libfieldFunctionObjectsPB.so");
+	
+	    // Optional entries (runtime modifiable)
+	    //patches     (<patch1> ... <patchN>); // (wall1 "(wall2|wall3)");
+	    evapPatch     (H_WALL); // (wall1 "(wall2|wall3)");
+	    condPatch     (C_WALL); // (wall1 "(wall2|wall3)");
+	
+	    // Optional (inherited) entries
+	    writePrecision  8;
+	    writeToFile     true;
+	    useUserTime     true;
+	    region          region0;
+	    enabled         true;
+	    log             true;
+	    timeStart       0;
+	    timeEnd         1000;
+	    executeControl  timeStep;
+	    executeInterval 1;
+	    writeControl    timeStep;
+	    writeInterval   50;
+	}
     \endverbatim
 
     Where the entries comprise:
     \table
-        Property | Description                        | Required   | Default value
-        type     | type name: thermalResistancePHP    | yes        |
-        patches  | list of patches to process         | no         | all wall patches
+        Property   | Description                        | Required   | Default value
+        type       | type name: thermalResistancePHP    | yes        |
+        evapPatch  | list of patches to process         | no         | all wall patches
+        condPatch  | list of patches to process         | no         | all wall patches
     \endtable
 
 See also

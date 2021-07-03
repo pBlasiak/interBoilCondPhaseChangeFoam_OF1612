@@ -141,6 +141,8 @@ Foam::functionObjects::thermalResistancePHP::thermalResistancePHP
     mesh_.objectRegistry::store(thermalResistancePHPPtr);
 
     read(dict);
+
+    writeFileHeader(file());
 }
 
 
@@ -305,7 +307,6 @@ bool Foam::functionObjects::thermalResistancePHP::write()
 
         const scalar minHfp = gMin(hfp);
         const scalar maxHfp = gMax(hfp);
-        const scalar integralHfp = gSum(magSf[patchi]*hfp);
 
         if (Pstream::master())
         {
@@ -314,12 +315,11 @@ bool Foam::functionObjects::thermalResistancePHP::write()
                 << token::TAB << pp.name()
                 << token::TAB << minHfp
                 << token::TAB << maxHfp
-                << token::TAB << integralHfp
                 << endl;
         }
 
         Log << "    min/max(" << pp.name() << ") = "
-            << minHfp << ", " << maxHfp << ", " << integralHfp << endl;
+            << minHfp << ", " << maxHfp << endl;
     }
 
     return true;
