@@ -74,42 +74,36 @@ void Foam::functionObjects::thermalResistancePHP::calcThermalResistancePHP
 
     const volScalarField::Boundary& TBf = T.boundaryField();
 
-	dimensionedScalar Tbe("Tbe0", dimTemperature*dimArea, 0.0);
-	dimensionedScalar Ae("Ae0", dimArea, 0.0);
-	forAll(evapPatchSet_, patchi)
-	{
-		forAll(TBf, patchID)
-		{
-			Tbe.value() += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
-			Ae.value()  += mesh_.magSf().boundaryField()[patchi][patchID];
-		}
-	}
-	dimensionedScalar TevapAve = Tbe/Ae;
-	Info<< "TevapAve = " << TevapAve << endl;
-		
-	dimensionedScalar Tbc("Tbc0", dimTemperature*dimArea, 0.0);
-	dimensionedScalar Ac("Ac0", dimArea, 0.0);
-	forAll(condPatchSet_, patchi)
-	{
-		forAll(TBf, patchID)
-		{
-			Tbc.value() += mesh_.magSf().boundaryField()[patchi][patchID]*TBf[patchi][patchID];
-			Ac.value()  += mesh_.magSf().boundaryField()[patchi][patchID];
-		}
-	}
-	dimensionedScalar TcondAve = Tbc/Ac;
-	Info<< "TcondAve = " << TcondAve << endl;
+	dimensionedScalar TevapAve("TevapAve", dimTemperature, 0.0);
+    forAllConstIter(labelHashSet, evapPatchSet_, iter)
+    {
+        label patchi = iter.key();
+	    	TevapAve.value() = gSum(mesh_.magSf().boundaryField()[patchi]*TBf[patchi])
+				/gSum(mesh_.magSf().boundaryField()[patchi]);
+    }
 
-	dimensionedScalar Q("Q0", dimPower, 0.0);
-	forAll(evapPatchSet_, patchi)
-	{
-		forAll(heatFluxBf, patchID)
-		{
-			Q.value() += mesh_.magSf().boundaryField()[patchi][patchID]*heatFluxBf[patchi][patchID];
-		}
-	}
+	//Info<< "TevapAve = " << TevapAve << endl;
+		
+	dimensionedScalar TcondAve("TcondAve", dimTemperature, 0.0);
+    forAllConstIter(labelHashSet, condPatchSet_, iter)
+    {
+        label patchi = iter.key();
+	    	TcondAve.value()= gSum(mesh_.magSf().boundaryField()[patchi]*TBf[patchi])
+				/gSum(mesh_.magSf().boundaryField()[patchi]);
+    }
+
+	//Info<< "TcondAve = " << TcondAve << endl;
+
+	dimensionedScalar Q("Q", dimPower, 0.0);
+    forAllConstIter(labelHashSet, evapPatchSet_, iter)
+    {
+        label patchi = iter.key();
+	    	Q.value() = gSum(mesh_.magSf().boundaryField()[patchi]*heatFluxBf[patchi]);
+    }
+	//Info<< "Q = " << Q << endl;
 
 	thermalResistancePHP = (TevapAve - TcondAve)/Q;
+	Info<< "thermalResistancePHP = " << thermalResistancePHP << endl;
 }
 
 

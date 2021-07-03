@@ -21,6 +21,8 @@ if (calcPHPThermRes)
     	);
     
     Info<< "\nThermal resistance of the PHP = " << thermalResistancePHP.value() << " [K/W]" << endl;
+    Info<< "\nTe = " << Te << " [K]" << endl;
+    Info<< "\nTc = " << Tc << " [K]" << endl;
 }
 
 if (printWallHeatFluxes)
