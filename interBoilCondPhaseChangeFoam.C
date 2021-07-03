@@ -128,7 +128,10 @@ int main(int argc, char *argv[])
 
         mixture->correct();
 
-		#include "calcThermalResistancePHP.H"
+		if (printWallHeatFluxes)
+		{
+			#include "calcWallHeatFluxes.H"
+		}
 
         runTime.write();
 

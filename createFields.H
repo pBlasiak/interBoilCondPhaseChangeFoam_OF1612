@@ -50,24 +50,9 @@ dimensionedScalar Prt
 	transportProperties.lookup("Prt")
 );
 
-bool calcPHPThermRes
-(
-	transportProperties.lookupOrDefault("calcPHPThermalResistance", false)
-);
-
 bool printWallHeatFluxes
 (
 	transportProperties.lookupOrDefault("printWallHeatFluxes", false)
-);
-
-dimensionedScalar thermalResistancePHP("thermalResistancePHP", dimEnergy/dimTime/dimTemperature, 0.0);
-word evapPatch
-(
-	transportProperties.lookup("evaporatorPatch")
-);
-word condPatch
-(
-	transportProperties.lookup("condenserPatch")
 );
 
 volScalarField p
@@ -162,7 +147,7 @@ volScalarField alphat
         runTime.timeName(),
         mesh,
         IOobject::MUST_READ,
-        IOobject::NO_WRITE
+        IOobject::AUTO_WRITE
     ),
     mesh
 );
@@ -199,20 +184,6 @@ volScalarField rhoCp
     rho1*alpha1*cp1 + rho2*alpha2*cp2
 );
 rhoCp.oldTime();
-
-surfaceScalarField gradT=fvc::snGrad(T);
-surfaceScalarField wallHeatFlux
-(
-    IOobject
-    (
-        "wallHeatFlux",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-	fvc::interpolate(alphaEff*cp*rho)*gradT
-);
 
 
 // Construct interface from alpha1 distribution
