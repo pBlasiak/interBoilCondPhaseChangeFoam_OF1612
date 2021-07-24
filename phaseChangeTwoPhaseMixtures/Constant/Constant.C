@@ -69,6 +69,7 @@ Foam ::volScalarField Foam::phaseChangeTwoPhaseMixtures::Constant::calcGradAlpha
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
 Foam::phaseChangeTwoPhaseMixtures::Constant::mDotAlphal() const
 {
+
 	return Pair<tmp<volScalarField> >
 	(
 		mCondFlux_*calcGradAlphal(),
@@ -79,11 +80,10 @@ Foam::phaseChangeTwoPhaseMixtures::Constant::mDotAlphal() const
 Foam::Pair<Foam::tmp<Foam::volScalarField> >
 Foam::phaseChangeTwoPhaseMixtures::Constant::mDotP() const
 {
-
 	return Pair<tmp<volScalarField> >
 	(
-		mCondFlux_*calcGradAlphal()/max(p_-pSat_,1E-6*pSat_),
-	   -mEvapFlux_*calcGradAlphal()/max(pSat_-p_,1E-05*pSat_)
+		mCondFlux_*calcGradAlphal()*pos(p_ - pSat_)/max(p_-pSat_,1E-6*pSat_),
+	   -mEvapFlux_*calcGradAlphal()*neg(p_ - pSat_)/max(pSat_-p_,1E-6*pSat_)
 	);
 }
 
@@ -92,8 +92,8 @@ Foam::phaseChangeTwoPhaseMixtures::Constant::mDotT() const
 {
 	return Pair<tmp<volScalarField> >
 	(
-		mCondFlux_*calcGradAlphal()/max(TSat_ - T_,1E-20*TSat_),
-	   -mEvapFlux_*calcGradAlphal()/max(T_ - TSat_,1E-20*TSat_)
+		-mCondFlux_*calcGradAlphal()*neg(T_ - TSat_)/max(TSat_ - T_,1E-6*TSat_),
+	     mEvapFlux_*calcGradAlphal()*pos(T_ - TSat_)/max(T_ - TSat_,1E-6*TSat_)
 	);
 }
 
