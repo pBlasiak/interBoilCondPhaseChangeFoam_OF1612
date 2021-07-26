@@ -100,18 +100,21 @@ public:
     // Member Functions
 
 
-        //- Return the mass condensation and vaporisation rates as a
+        //- Return the mass condensation (+) and vaporisation (-) rates as a
         //  coefficient to multiply by (1 - alphal) for the condensation rate
         //  and a coefficient to multiply by alphal for the vaporisation rate
-		//  in alphaEqn
+		//  in alphaEqn 
+		//  units are kg/(m3 s)
         virtual Pair<tmp<volScalarField> > mDotAlphal() const;
 
-        //- Return the mass condensation and vaporisation rates as coefficients
+        //- Return the mass condensation (+) and vaporisation (-) rates as coefficients
         //  to multiply by (p - pSat) in pEqn
+		//  units are kg/(m3 s Pa)
         virtual Pair<tmp<volScalarField> > mDotP() const;
 
-        //- Return the mass condensation and vaporisation rates as coefficients
+        //- Return the mass condensation (-) and vaporisation (+) rates as coefficients
         //  to multiply by (T - TSat) in TEqn
+		//  units are kg/(m3 s K)
         virtual Pair<tmp<volScalarField> > mDotT() const;
 
         //- Read the transportProperties dictionary and update

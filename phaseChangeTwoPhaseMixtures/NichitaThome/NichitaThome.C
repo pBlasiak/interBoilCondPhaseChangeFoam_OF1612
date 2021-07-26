@@ -83,15 +83,15 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotAlphal() const
 	{
 		return Pair<tmp<volScalarField> >
 		(
-			neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(1.0 - limitedAlpha1, 1E-6),
-		   -pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(limitedAlpha1, 1E-6)
+		  -neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(1.0 - limitedAlpha1, 1E-6),
+		   pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(limitedAlpha1, 1E-6)
 		);
 	}
 	else if (cond_)
 	{
 		return Pair<tmp<volScalarField> >
 		(
-			neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_,
+		   -neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_,
 			mEvapAlphal_*scalar(0)
 		);
 	}
@@ -100,7 +100,7 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotAlphal() const
 		return Pair<tmp<volScalarField> >
 		(
 			mCondAlphal_*scalar(0),
-	       -pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
+	        pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
 		);
 	}
 	else 
@@ -125,9 +125,9 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotP() const
 	{
 		return Pair<tmp<volScalarField> >
 		(
-			neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
+		   -neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
 						*pos(p_-pSat_)/max(p_-pSat_,1E-6*pSat_),
-		   -pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
+		    pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
 						*neg(p_-pSat_)/max(pSat_-p_,1E-6*pSat_)
 		);
 	}
@@ -135,7 +135,7 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotP() const
 	{
 		return Pair<tmp<volScalarField> >
 		(
-			neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
+		   -neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
 						*pos(p_-pSat_)/max(p_-pSat_,1E-6*pSat_),
 			mEvapP_*scalar(0)
 		);
@@ -145,7 +145,7 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotP() const
 		return Pair<tmp<volScalarField> >
 		(
 			mCondP_*scalar(0),
-		   -pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
+		    pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_
 						*neg(p_-pSat_)/max(pSat_-p_,1E-6*pSat_)
 		);
 	}
@@ -170,15 +170,15 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotT() const
 	{
 		return Pair<tmp<volScalarField> >
 		(
-		   -neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(TSat_ - T_, 1E-6*TSat_),
-		    pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(T_ - TSat_, 1E-6*TSat_)
+		    neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(TSat_ - T_, 1E-6*TSat_),
+		   -pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(T_ - TSat_, 1E-6*TSat_)
 		);
 	}
 	else if (cond_)
 	{
 		return Pair<tmp<volScalarField> >
 		(
-		   -neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(TSat_ - T_, 1E-6*TSat_),
+		    neg(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(TSat_ - T_, 1E-6*TSat_),
 			mEvapT_*scalar(0)
 		);
 	}
@@ -187,7 +187,7 @@ Foam::phaseChangeTwoPhaseMixtures::NichitaThome::mDotT() const
 		return Pair<tmp<volScalarField> >
 		(
 			mCondT_*scalar(0),
-		    pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(T_ - TSat_, 1E-6*TSat_)
+		   -pos(T_ - TSat_)*kEff*gradAlphaGradT/hEvap_/max(T_ - TSat_, 1E-6*TSat_)
 		);
 	}
 	else
