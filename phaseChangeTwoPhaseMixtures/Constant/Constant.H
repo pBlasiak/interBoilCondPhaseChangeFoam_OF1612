@@ -29,7 +29,7 @@ Description
     Constant phase change model.
 	The model supports condensation and evaporation mass transfer.
 	The mass flux due to phase change is set in the dictionary
-	as constant value.
+	as a constant value (condMassFlux and evapMassFlux kg/(m2 s) ).
 
 
 
