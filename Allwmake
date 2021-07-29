@@ -8,8 +8,8 @@ targetType=libso
 . $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
 set -x
 
-wmake $targetType phaseChangeTwoPhaseMixtures
-wmake $targetType functionObjects/field/thermalResistancePHP
+#wmake $targetType phaseChangeTwoPhaseMixtures
+#wmake $targetType functionObjects/field/thermalResistancePHP
 wmake
 wmake interBoilCondPhaseChangeDyMFoam
 

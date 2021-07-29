@@ -5,6 +5,6 @@ set -x
 wclean libso phaseChangeTwoPhaseMixtures
 wclean libso functionObjects/field/thermalResistancePHP
 wclean
-wclean interPhaseChangeDyMFoam
+wclean interBoilCondPhaseChangeDyMFoam
 
 #------------------------------------------------------------------------------
