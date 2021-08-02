@@ -34,6 +34,7 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * [phaseChangeHeatFoam - Nima Sam's solver](https://github.com/NimaSam/phaseChangeHeatFoam)
 * [Discussion on phaseChangeHeatFoam on CFD online](https://www.cfd-online.com/Forums/openfoam-solving/87665-evapphasechangefoam-5.html)
 * [interThermalPhaseChangeFoam - article](https://www.sciencedirect.com/science/article/pii/S2352711016300309)
+* [interThermalPhaseChangeFoam - solver](https://github.com/MahdiNabil/CFD-PC)
 * [Jibran Heider thesis](https://www.researchgate.net/profile/Jibran_Haider/publication/259898900_Numerical_Modelling_of_Evaporation_and_Condensation_Phenomena/links/5738d95308ae9f741b2bda90/Numerical-Modelling-of-Evaporation-and-Condensation-Phenomena.pdf)
 * [influence of surface tension implementation on VOF](https://www.sciencedirect.com/science/article/pii/S0301932213000190)
 * [sclsVOFFoam](https://bitbucket.org/nunuma/public/src/d03747a27470214d29e43d5ffb4f1f4ef946c45d/OpenFOAM/solvers/2.0/?at=master)
@@ -51,6 +52,12 @@ https://github.com/pBlasiak/interBoilCondPhaseChangeFoam_OF1612
 * [benchmarks for VOF and solver in OF with smoothing](https://www.cfd-online.com/Forums/openfoam-verification-validation/124363-interfoam-validation-bubble-droplet-flows-microfluidics.html)
 * [sclsInterFoam](https://www.researchgate.net/publication/318233965_sCLSinterFoam_OpenFOAM220)
 * [interFoam - Berberovic's article](https://journals.aps.org/pre/pdf/10.1103/PhysRevE.79.036306)
+* [evapVOFHardt discussion](https://www.cfd-online.com/Forums/openfoam-solving/150535-evapvofhardt-discussion-come-join.html)
+* [evapVOFHardt - solver](https://github.com/wyldckat/evapVOFHardt)
+* [evapVOFHardt - solver (OF6.0)](https://github.com/Swagga5aur/evapVOFHardt)
+* [isoAdvector - article (1)](https://www.sciencedirect.com/science/article/pii/S0021999119300269)
+* [isoAdvector - article (2)](https://www.sciencedirect.com/science/article/pii/S0045793020302929#bib0008)
+* [isoAdvector - solver](https://github.com/DLR-RY/VoFLibrary)
 
 
 ## TODO
